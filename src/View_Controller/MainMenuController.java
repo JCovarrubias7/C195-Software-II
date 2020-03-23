@@ -1,0 +1,141 @@
+package View_Controller;
+
+import Model.Appointment;
+import Model.Customer;
+import Model.CustomerList;
+import static Model.DBManager.closeConnection;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Optional;
+import java.util.ResourceBundle;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
+
+/**
+ * FXML Controller class
+ *
+ * @author Jorge Covarrubias
+ */
+public class MainMenuController implements Initializable {
+    
+    //Declare Fields
+    Stage stage;
+    Parent scene;
+
+    @FXML
+    private TableView<Appointment> calendarTableView;
+    @FXML
+    private TableColumn<?, ?> calendarUserCol;
+    @FXML
+    private TableColumn<?, ?> calendarCustomerCol;
+    @FXML
+    private TableColumn<?, ?> calendarTypeCol;
+    @FXML
+    private TableColumn<?, ?> calendarTimeCol;
+    @FXML
+    private TableView<Customer> customerTableView;
+    @FXML
+    private TableColumn<Customer, String> customerNameCol;
+    @FXML
+    private TableColumn<Customer, String> customerAddressCol;
+    @FXML
+    private TableColumn<Customer, String> customerAddress2Col;
+    @FXML
+    private TableColumn<Customer, String> customerCityCol;
+    @FXML
+    private TableColumn<Customer, String> customerCountryCol;
+    @FXML
+    private TableColumn<Customer, String> customerPhoneCol;
+
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        // TODO
+        // app withing 15 minutes of loggin in
+        //Set the colums to go get the specific info from the customer object
+        customerNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
+        customerAddress2Col.setCellValueFactory(new PropertyValueFactory<>("address2"));
+        customerCityCol.setCellValueFactory(new PropertyValueFactory<>("city"));
+        customerCountryCol.setCellValueFactory(new PropertyValueFactory<>("country"));
+        customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
+        
+        //Set the table with the customerlist
+        mainUpdateCustomerTableView();
+    }    
+    
+    public void mainUpdateCustomerTableView() {
+        //updateCustomerList();
+        customerTableView.setItems(CustomerList.getAllCustomers());
+    }
+
+    @FXML
+    private void mainAppointmentAdd(ActionEvent event) {
+    }
+
+    @FXML
+    private void mainAppointmentModify(ActionEvent event) {
+    }
+
+    @FXML
+    private void mainAppointmentDelete(ActionEvent event) {
+    }
+
+    @FXML
+    private void mainReports(ActionEvent event) {
+    }
+
+    @FXML
+    private void mainCustomerAdd(ActionEvent event) throws IOException {
+         //Open the PartAdd scene on button press
+        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(getClass().getResource("/View_Controller/AddCustomer.fxml"));
+        stage.setScene(new Scene(scene));
+        stage.show();
+    }
+
+    @FXML
+    private void mainCustomerModify(ActionEvent event) {
+    }
+
+    @FXML
+    private void mainCustomerDelete(ActionEvent event) {
+    }
+
+    @FXML
+    private void mainWeeklyView(ActionEvent event) {
+    }
+
+    @FXML
+    private void mainMonthlyView(ActionEvent event) {
+    }
+    
+    @FXML
+    private void mainExit(ActionEvent event) {
+        //Create the dialog box on exit
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to Exit? Press OK to exit");
+        alert.setTitle("Exit Application");
+        Optional<ButtonType> result = alert.showAndWait();
+        if(result.isPresent() && result.get() == ButtonType.OK) {
+            closeConnection();
+            System.exit(0);
+        }
+        else {
+            alert.close();
+        }
+    }
+    
+}
