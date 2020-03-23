@@ -4,6 +4,7 @@ import Model.Appointment;
 import Model.Customer;
 import Model.CustomerList;
 import static Model.DBManager.closeConnection;
+import static Model.DBManager.updateCustomerList;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
@@ -78,7 +79,7 @@ public class MainMenuController implements Initializable {
     }    
     
     public void mainUpdateCustomerTableView() {
-        //updateCustomerList();
+        updateCustomerList();
         customerTableView.setItems(CustomerList.getAllCustomers());
     }
 

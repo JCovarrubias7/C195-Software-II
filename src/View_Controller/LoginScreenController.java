@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package View_Controller;
 
 import static Model.DBManager.checkCredentials;
@@ -21,12 +16,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 /**
  * FXML Controller class
  *
- * @author Se7en
+ * @author Jorge Covarrubias
  */
 public class LoginScreenController implements Initializable {
     
@@ -64,7 +61,14 @@ public class LoginScreenController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
         setLanguage(); 
-    }    
+    }
+
+  @FXML
+    void loginOnEnterKey(KeyEvent event) {
+        if(event.getCode() == KeyCode.ENTER) {
+            loginButton.fire();
+        }
+    }
 
     @FXML
     private void loginBtn(ActionEvent event) throws IOException {

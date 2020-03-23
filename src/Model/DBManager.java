@@ -1,6 +1,7 @@
 package Model;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Optional;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
@@ -149,11 +150,11 @@ public class DBManager {
     //Create a method to check whether the customer already exist in the DB
     //and check if it is active or not. If not active, it will activate.
     public static void addNewCustomerChecks(String name, String address, String address2,
-            String phone, String city, String state, String zip, String country) {
+            String phone, String city, String state, String postalCode, String country) {
         try {
             int countryId = getCountryId(country);
             int cityId = getCityId(city, countryId);
-            int addressId = getAddressId(address, address2, cityId, zip, phone);
+            int addressId = getAddressId(address, address2, cityId, postalCode, phone);
             
             //Check if the customer already exist in the DB
             //If the customer exist and not active, set as active
@@ -301,7 +302,7 @@ public class DBManager {
     }
     
     //Get the addressId from the address and if it doesn't exist, create one
-    public static int getAddressId(String address, String address2, int cityId, String zip, 
+    public static int getAddressId(String address, String address2, int cityId, String postalCode, 
         String phone) {
         int addressId = -1;
         String query = "SELECT addressId FROM address WHERE address = ? AND address2 = ?"
@@ -312,7 +313,7 @@ public class DBManager {
             prepStmt.setString(1, address);
             prepStmt.setString(2, address2);
             prepStmt.setInt(3, cityId);
-            prepStmt.setString(4, zip);
+            prepStmt.setString(4, postalCode);
             prepStmt.setString(5, phone);
             //prepStmt.setString(6, state);
             //Get the addressId from the DB
@@ -349,7 +350,7 @@ public class DBManager {
                 prepStmt.setString(2, address);
                 prepStmt.setString(3, address2);
                 prepStmt.setInt(4, cityId);
-                prepStmt.setString(5, zip);
+                prepStmt.setString(5, postalCode);
                 prepStmt.setString(6, phone);
                 //prepStmt.setString(7, state);
                 prepStmt.executeUpdate();
@@ -442,11 +443,76 @@ public class DBManager {
     //Populate the customer list from the DB
     public static void updateCustomerList() {
         //Create the list to populate to
-        ObservableList<Customer> custList = CustomerList.getAllCustomers();
-        //Create a query to pass with the preparedStatement method
-        String query = "";
-        
-        //Create a connection and statement
-        preparedStatement(query);
+        ObservableList<Customer> customerList = CustomerList.getAllCustomers();
+        //Make sure it is empty since we are going to populate the list from the DB
+        customerList.clear();
+        String query = "SELECT customerId FROM customer WHERE active = 1";
+        ArrayList<Integer> activeCustomerIdList = new ArrayList<>();
+        startConnection();
+        try {
+            Statement createStmt= conn.createStatement();
+            ResultSet activeCustomerSet = createStmt.executeQuery(query);
+            while(activeCustomerSet.next()) {
+                activeCustomerIdList.add(activeCustomerSet.getInt("customerId"));
+            }
+            for (int customerId : activeCustomerIdList) {
+                //Create a query to retrieve customer name, id , and active from
+                //customer table. We already have the ID from the previous query.
+                query = "SELECT customerName, addressId, active FROM customer WHERE"
+                        + " customerId = '"+ customerId +"' ";
+                ResultSet customerSet = createStmt.executeQuery(query);
+                customerSet.next();
+                //Set variables with the data from the Database
+                String name = customerSet.getString("customerName");
+                int addressId = customerSet.getInt("addressId");
+                byte active = customerSet.getByte("active");
+                
+                //Create a query to get the address information for the current customer
+                query = "SELECT address, address2, cityId, postalCode, phone FROM address "
+                        + " WHERE addressId = '"+ addressId +"' ";
+                ResultSet addressSet = createStmt.executeQuery(query);
+                addressSet.next();
+                //Set variables with the data from the DB
+                String address = addressSet.getString("address");
+                String address2 = addressSet.getString("address2");
+                int cityId = addressSet.getInt("cityId");
+                String postalCode = addressSet.getString("postalCode");
+                String phone = addressSet.getString("phone");
+                
+                //Create a query to get the city information for the current customer
+                query = "SELECT city, countryId FROM city WHERE cityId = '"+ cityId + "'";
+                ResultSet citySet = createStmt.executeQuery(query);
+                citySet.next();
+                //Set variables with the data from the DB
+                String city = citySet.getString("city");
+                int countryId = citySet.getInt("countryId");
+                
+                //Create a query to get the country information for the current customer
+                query = "SELECT country FROM country WHERE countryId = '"+ countryId + "'";
+                ResultSet countrySet = createStmt.executeQuery(query);
+                countrySet.next();
+                //Set variables with the data from the DB
+                String country = countrySet.getString("country");
+                
+                //Close resultsets and connection
+                activeCustomerSet.close();
+                customerSet.close();
+                addressSet.close();
+                citySet.close();
+                countrySet.close();
+                createStmt.close();
+                conn.close();
+                
+                //Create customer with constructor
+                Customer customer = new Customer(customerId, name, addressId, active, 
+                        address, address2, cityId, postalCode, phone, city, countryId, country);
+                
+                //Add customer to the observableList customer
+                customerList.add(customer);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
