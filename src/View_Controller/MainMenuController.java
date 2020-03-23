@@ -4,6 +4,7 @@ import Model.Appointment;
 import Model.Customer;
 import Model.CustomerList;
 import static Model.DBManager.closeConnection;
+import static Model.DBManager.setCustomerToInactive;
 import static Model.DBManager.updateCustomerList;
 import java.io.IOException;
 import java.net.URL;
@@ -79,7 +80,7 @@ public class MainMenuController implements Initializable {
     }    
     
     public void mainUpdateCustomerTableView() {
-        updateCustomerList();
+         updateCustomerList();
         customerTableView.setItems(CustomerList.getAllCustomers());
     }
 
@@ -114,6 +115,18 @@ public class MainMenuController implements Initializable {
 
     @FXML
     private void mainCustomerDelete(ActionEvent event) {
+        //Grab the selected customer from the tableView
+        Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
+        //Create a warning dialog box letting the user know that no customer has been selected to delete
+        if (selectedCustomer == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "There are no customers to delete or select a customer to delete");
+            alert.setTitle("There was an Error");
+            alert.showAndWait();
+        }
+        else {
+            setCustomerToInactive(selectedCustomer);
+            updateCustomerList();
+        }
     }
 
     @FXML

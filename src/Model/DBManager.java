@@ -17,6 +17,7 @@ public class DBManager {
     //Create Fields
     private static String currentUser;
     private static PreparedStatement prepStmt;
+    private static Statement createStmt;
     
     //JDBC Url Parts
     private static final String protocol = "jdbc";
@@ -59,6 +60,18 @@ public class DBManager {
         startConnection();
         try {
             prepStmt = conn.prepareStatement(query);
+        }
+        catch(SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        return prepStmt;
+    }
+     
+     //Create a statement from the connection
+     public static Statement createStatement(){
+        startConnection();
+        try {
+            createStmt = conn.createStatement();
         }
         catch(SQLException e) {
             System.out.println(e.getMessage());
@@ -386,7 +399,7 @@ public class DBManager {
     
     public static void setCustomerToActive(String name, int addressId) {
         String query = "UPDATE customer SET active = 1, lastUpdate = CURRENT_TIMESTAMP,"
-                + "lastUpdateBy = '"+currentUser+"' WHERE customerName = ?,"
+                + "lastUpdateBy = '"+currentUser+"' WHERE customerName = ? "
                 + "AND addressId = ?";
         preparedStatement(query);
         
@@ -515,4 +528,32 @@ public class DBManager {
             System.out.println(e.getMessage());
         }
     }
+    
+    //Set customer to inactive
+    public static void setCustomerToInactive(Customer customer) {
+        //Create varibales with customer information
+        int customerId = customer.getId();
+        String customerName = customer.getName();
+        int addressId = customer.getAddressId();
+        String query = "UPDATE customer SET active = 0, lastUpdate = CURRENT_TIMESTAMP,"
+                + "lastUpdateBy = '" + currentUser + "' WHERE customerId = '" + customerId + "' "
+                + "AND customerName = '" + customerName + "' AND addressId = '" + addressId + "' ";
+        createStatement();
+
+        //Create a confirmation dialog box to confirm deletion/inactive
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete/set inactive customer " + customerName + "? Press OK to delete");
+        alert.setTitle("Confirm deletion/incative");
+        alert.showAndWait().ifPresent((response -> {  //quick lambda
+            if (response == ButtonType.OK) {
+                try {
+                    createStmt.executeUpdate(query);
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            } else {
+                alert.close();
+            }
+        }));
+    }
+    
 }
