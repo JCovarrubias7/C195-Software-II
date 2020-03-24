@@ -46,9 +46,7 @@ public class AddCustomerController implements Initializable {
     @FXML
     private TextField addCustomerCityField;
     @FXML
-    private TextField addCustomerStateField;
-    @FXML
-    private TextField addCustomerZipField;
+    private TextField addCustomerPostalCodeField;
     @FXML
     private TextField addCustomerCountryField;
 
@@ -68,13 +66,12 @@ public class AddCustomerController implements Initializable {
         String address2 = addCustomerAddress2Field.getText();
         String phone = addCustomerPhoneField.getText();
         String city = addCustomerCityField.getText();
-        String state = addCustomerStateField.getText();
-        String zip = addCustomerZipField.getText();
+        String postalCode = addCustomerPostalCodeField.getText();
         String country = addCustomerCountryField.getText();
         
         //TODO Add validation
         
-        addNewCustomerChecks(name, address, address2, phone, city, state, zip, country);
+        addNewCustomerChecks(name, address, address2, phone, city, postalCode, country);
         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
         stage.setScene(new Scene(scene));

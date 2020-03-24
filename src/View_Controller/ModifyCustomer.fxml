@@ -13,7 +13,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.ModifyCustomerController">
    <children>
       <Label alignment="CENTER" layoutX="216.0" layoutY="14.0" text="Modify Customer">
          <font>
@@ -61,58 +61,40 @@
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin></Label>
-                  <Label text="Zip Code" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                  <Label text="Postal Code" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin></Label>
-                  <TextField disable="true" editable="false" promptText="Auto Generated Id - " GridPane.columnIndex="1">
+                  <TextField fx:id="modCustomerIdField" disable="true" editable="false" promptText="Auto Generated Id - " GridPane.columnIndex="1">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <TextField fx:id="modCustomerNameField" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <TextField fx:id="modCustomerAddressField" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <TextField fx:id="modCustomerAddress2Field" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="4">
+                  <TextField fx:id="modCustomerPhoneField" GridPane.columnIndex="1" GridPane.rowIndex="4">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <GridPane prefHeight="51.0" prefWidth="325.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="10.0" prefWidth="177.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="52.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.0" minWidth="10.0" prefWidth="126.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <TextField />
-                        <Label text="State" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
-                           <GridPane.margin>
-                              <Insets right="5.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <TextField GridPane.columnIndex="2">
-                           <GridPane.margin>
-                              <Insets right="5.0" />
-                           </GridPane.margin>
-                        </TextField>
-                     </children>
-                  </GridPane>
+                  <TextField fx:id="modCustomerCityField" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                     <GridPane.margin>
+                        <Insets right="5.0" />
+                     </GridPane.margin>
+                  </TextField>
                   <GridPane GridPane.columnIndex="1" GridPane.rowIndex="6">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="125.0" minWidth="10.0" prefWidth="117.0" />
@@ -123,13 +105,13 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <TextField />
+                        <TextField fx:id="modCustomerPostalCodeField" />
                         <Label text="Country" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
                            <GridPane.margin>
                               <Insets right="5.0" />
                            </GridPane.margin>
                         </Label>
-                        <TextField GridPane.columnIndex="2">
+                        <TextField fx:id="modCustomerCountryField" GridPane.columnIndex="2">
                            <GridPane.margin>
                               <Insets right="5.0" />
                            </GridPane.margin>
@@ -143,9 +125,9 @@
             </GridPane>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
-                  <Button minWidth="100.0" mnemonicParsing="false" text="Save" />
+                  <Button minWidth="100.0" mnemonicParsing="false" onAction="#modCustomerOnActionSaveBtn" text="Save" />
                   <Pane prefHeight="97.0" prefWidth="129.0" />
-                  <Button minWidth="100.0" mnemonicParsing="false" text="Cancel" />
+                  <Button minWidth="100.0" mnemonicParsing="false" onAction="#modCustomerOnActionCancelBtn" text="Cancel" />
                </children>
             </HBox>
          </children>

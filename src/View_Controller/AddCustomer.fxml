@@ -61,7 +61,7 @@
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin></Label>
-                  <Label text="Zip Code" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
+                  <Label text="Postal Code" GridPane.halignment="RIGHT" GridPane.rowIndex="6">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin></Label>
@@ -90,29 +90,11 @@
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <GridPane prefHeight="51.0" prefWidth="325.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
-                    <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="10.0" prefWidth="177.0" />
-                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="126.0" minWidth="10.0" prefWidth="52.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="175.0" minWidth="10.0" prefWidth="126.0" />
-                    </columnConstraints>
-                    <rowConstraints>
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                    </rowConstraints>
-                     <children>
-                        <TextField fx:id="addCustomerCityField" promptText="City" />
-                        <Label text="State" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
-                           <GridPane.margin>
-                              <Insets right="5.0" />
-                           </GridPane.margin>
-                        </Label>
-                        <TextField fx:id="addCustomerStateField" promptText="State" GridPane.columnIndex="2">
-                           <GridPane.margin>
-                              <Insets right="5.0" />
-                           </GridPane.margin>
-                        </TextField>
-                     </children>
-                  </GridPane>
+                  <TextField fx:id="addCustomerCityField" promptText="City" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                     <GridPane.margin>
+                        <Insets right="5.0" />
+                     </GridPane.margin>
+                  </TextField>
                   <GridPane GridPane.columnIndex="1" GridPane.rowIndex="6">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" maxWidth="125.0" minWidth="10.0" prefWidth="117.0" />
@@ -123,7 +105,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <TextField fx:id="addCustomerZipField" promptText="Zip Code" />
+                        <TextField fx:id="addCustomerPostalCodeField" promptText="Zip Code" />
                         <Label text="Country" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
                            <GridPane.margin>
                               <Insets right="5.0" />

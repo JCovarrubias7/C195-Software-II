@@ -163,7 +163,7 @@ public class DBManager {
     //Create a method to check whether the customer already exist in the DB
     //and check if it is active or not. If not active, it will activate.
     public static void addNewCustomerChecks(String name, String address, String address2,
-            String phone, String city, String state, String postalCode, String country) {
+            String phone, String city, String postalCode, String country) {
         try {
             int countryId = getCountryId(country);
             int cityId = getCityId(city, countryId);
@@ -252,7 +252,6 @@ public class DBManager {
 
                 return countryId;
             }
-
         } 
         catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -450,7 +449,6 @@ public class DBManager {
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        
     }
     
     //Populate the customer list from the DB
@@ -527,6 +525,66 @@ public class DBManager {
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+    
+    //Create a method to check whether the customer already exist in the DB
+    //and check if it is active or not. If not active, it will activate.
+    public static void modifyCustomerChecks(int id, String name, String address, String address2,
+            String phone, String city, String postalCode, String country) {
+        try {
+            int countryId = getCountryId(country);
+            int cityId = getCityId(city, countryId);
+            int addressId = getAddressId(address, address2, cityId, postalCode, phone);
+            
+            //Check if the customer already exist in the DB
+            //If the customer exist and not active, set as active
+            //If the customer doesn't exit, create customer
+            if (checkIfCustomerExist(name, addressId)) {
+                String query = "SELECT active FROM customer WHERE customerName = ? "
+                        + "AND addressId = ? ";
+                preparedStatement(query);
+                try {
+                    prepStmt.setString(1, name);
+                    prepStmt.setInt(2, addressId);
+                    ResultSet activeCustomerSet = prepStmt.executeQuery();
+                    activeCustomerSet.next();
+                    int active = activeCustomerSet.getInt("active");
+                     
+                    if (active == 1) {
+                        Alert alert = new Alert(Alert.AlertType.WARNING, "The customer already exist in the Database and is marked as active.");
+                        alert.setTitle("Customer in DB");
+                        alert.showAndWait();
+                    }
+                    else if (active == 0) {
+                        setCustomerToActive(name, addressId);
+                    }
+                }
+                catch (SQLException e) {
+                System.out.println(e.getMessage());
+                }
+            }
+            else {
+                modifyCustomer(id, name, addressId);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    private static void modifyCustomer(int id, String name, int addressId) {
+        String query = "UPDATE customer SET customerName = ?,addressId = ? WHERE customerId = ?";
+        preparedStatement(query);
+        try {
+           prepStmt.setString(1, name);
+           prepStmt.setInt(2, addressId);
+           prepStmt.setInt(3, id);
+           prepStmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
     }
     
     //Set customer to inactive

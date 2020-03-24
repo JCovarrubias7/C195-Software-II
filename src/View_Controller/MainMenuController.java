@@ -110,7 +110,28 @@ public class MainMenuController implements Initializable {
     }
 
     @FXML
-    private void mainCustomerModify(ActionEvent event) {
+    private void mainCustomerModify(ActionEvent event) throws IOException {
+        //Grab the selected customer from the tableView
+        Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
+        //Create a warning dialog box letting the user know that no customer has been selected to delete
+        if (selectedCustomer == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "There is no customer selected to modify");
+            alert.setTitle("No Customer Selected");
+            alert.showAndWait();
+        } 
+        else {
+            //Send the selected part to the PartModify controller
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/View_Controller/ModifyCustomer.fxml"));
+            loader.load();
+            ModifyCustomerController MCController = loader.getController();
+            MCController.sendCustomer(selectedCustomer);
+
+            stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Parent scene = loader.getRoot();
+            stage.setScene(new Scene(scene));
+            stage.show();
+        }
     }
 
     @FXML
@@ -120,7 +141,7 @@ public class MainMenuController implements Initializable {
         //Create a warning dialog box letting the user know that no customer has been selected to delete
         if (selectedCustomer == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "There are no customers to delete or select a customer to delete");
-            alert.setTitle("There was an Error");
+            alert.setTitle("No Customer Selected");
             alert.showAndWait();
         }
         else {
