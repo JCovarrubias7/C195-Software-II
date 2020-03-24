@@ -86,6 +86,7 @@ public class LoginScreenController implements Initializable {
                 stage = (Stage)((Button)event.getSource()).getScene().getWindow();
                 scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
                 stage.setScene(new Scene(scene));
+                stage.setTitle("Appointment System - Main Menu");
                 stage.show();
             }
             else {

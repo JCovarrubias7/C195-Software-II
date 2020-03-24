@@ -18,6 +18,7 @@ public class JorgeCAppointmentSystem extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/View_Controller/LoginScreen.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        stage.setTitle("Appointment System");
         stage.show();
     }
 

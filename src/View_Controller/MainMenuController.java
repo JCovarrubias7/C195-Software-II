@@ -106,6 +106,7 @@ public class MainMenuController implements Initializable {
         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/View_Controller/AddCustomer.fxml"));
         stage.setScene(new Scene(scene));
+        stage.setTitle("Appointment System - Add Customer");
         stage.show();
     }
 
@@ -130,6 +131,7 @@ public class MainMenuController implements Initializable {
             stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
             Parent scene = loader.getRoot();
             stage.setScene(new Scene(scene));
+            stage.setTitle("Appointment System - Modify Customer");
             stage.show();
         }
     }
