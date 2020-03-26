@@ -614,4 +614,52 @@ public class DBManager {
         }));
     }
     
+    public static void addNewAppointmentCheck(int customerId, String title, String description, 
+            String location, String contact, String type, String url, String startTime, String endTime) {
+        
+        //TODO
+        //MAke sure time doesn't overlapt with another appointment
+        addAppointment(customerId, title, description, location, contact, type, url, startTime, endTime);
+        
+       
+    }
+    
+    private static void addAppointment(int customerId, String title, String description, String location, 
+            String contact, String type, String url, String startTime, String endTime) {
+        
+        String query = "SELECT appointmentId from appointment ORDER BY appointmentId";
+        int appointmentId;
+        int userId = getUserId(currentUser);
+        createStatement();
+        try {
+            ResultSet allAppointmentIds = createStmt.executeQuery(query);
+            if (allAppointmentIds.last()) {
+                appointmentId = allAppointmentIds.getInt("appointmentId");
+                appointmentId++;
+                allAppointmentIds.close();
+                createStmt.close();
+            }
+            else {
+                allAppointmentIds.close();
+                createStmt.close();
+                appointmentId = 1;
+            }
+            query = "INSERT INTO appointment VALUES ('"+ appointmentId + "', '"+ customerId +"', "
+                    + " '"+ userId +"', ?, ?, ?, ?, ?, ?, '"+ startTime +"', '"+ endTime +"',"
+                    + "CURRENT_DATE, '"+ currentUser +"', CURRENT_TIMESTAMP, '"+ currentUser +"')";
+            preparedStatement(query);
+            prepStmt.setString(1, title);
+            prepStmt.setString(2, description);
+            prepStmt.setString(3, location);
+            prepStmt.setString(4, contact);
+            prepStmt.setString(5, type);
+            prepStmt.setString(6, url);
+            prepStmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+        
+    }
+    
 }

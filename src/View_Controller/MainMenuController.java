@@ -80,12 +80,18 @@ public class MainMenuController implements Initializable {
     }    
     
     public void mainUpdateCustomerTableView() {
-         updateCustomerList();
+        updateCustomerList();
         customerTableView.setItems(CustomerList.getAllCustomers());
     }
 
     @FXML
-    private void mainAppointmentAdd(ActionEvent event) {
+    private void mainAppointmentAdd(ActionEvent event) throws IOException {
+        //Open the AddCustomer scene on button press
+        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(getClass().getResource("/View_Controller/AddAppointment.fxml"));
+        stage.setScene(new Scene(scene));
+        stage.setTitle("Appointment System - Create Appointment");
+        stage.show();
     }
 
     @FXML
@@ -102,7 +108,7 @@ public class MainMenuController implements Initializable {
 
     @FXML
     private void mainCustomerAdd(ActionEvent event) throws IOException {
-         //Open the PartAdd scene on button press
+        //Open the AddCustomer scene on button press
         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/View_Controller/AddCustomer.fxml"));
         stage.setScene(new Scene(scene));
