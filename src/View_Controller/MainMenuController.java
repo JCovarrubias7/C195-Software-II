@@ -1,10 +1,12 @@
 package View_Controller;
 
 import Model.Appointment;
+import Model.AppointmentList;
 import Model.Customer;
 import Model.CustomerList;
 import static Model.DBManager.closeConnection;
 import static Model.DBManager.setCustomerToInactive;
+import static Model.DBManager.updateCalendarList;
 import static Model.DBManager.updateCustomerList;
 import java.io.IOException;
 import java.net.URL;
@@ -38,13 +40,17 @@ public class MainMenuController implements Initializable {
     @FXML
     private TableView<Appointment> calendarTableView;
     @FXML
-    private TableColumn<?, ?> calendarUserCol;
+    private TableColumn<Appointment, String> calendarUserCol;
     @FXML
-    private TableColumn<?, ?> calendarCustomerCol;
+    private TableColumn<Appointment, String> calendarCustomerCol;
     @FXML
-    private TableColumn<?, ?> calendarTypeCol;
+    private TableColumn<Appointment, String> calendarTypeCol;
     @FXML
-    private TableColumn<?, ?> calendarTimeCol;
+    private TableColumn<Appointment, String> calendarLocationCol;
+    @FXML
+    private TableColumn<Appointment, String> calendarStartTimeCol;
+    @FXML
+    private TableColumn<Appointment, String> calendarEndTimeCol;
     @FXML
     private TableView<Customer> customerTableView;
     @FXML
@@ -66,7 +72,7 @@ public class MainMenuController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        // app withing 15 minutes of loggin in
+        // appointment withing 15 minutes of loggin in
         //Set the colums to go get the specific info from the customer object
         customerNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -75,13 +81,28 @@ public class MainMenuController implements Initializable {
         customerCountryCol.setCellValueFactory(new PropertyValueFactory<>("country"));
         customerPhoneCol.setCellValueFactory(new PropertyValueFactory<>("phone"));
         
+        //Set the colums to get the specifc info from the appointment object
+        calendarUserCol.setCellValueFactory(new PropertyValueFactory<>("userName"));
+        calendarCustomerCol.setCellValueFactory(new PropertyValueFactory<>("customerName"));
+        calendarTypeCol.setCellValueFactory(new PropertyValueFactory<>("type"));
+        calendarLocationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
+        calendarStartTimeCol.setCellValueFactory(new PropertyValueFactory<>("start"));
+        calendarEndTimeCol.setCellValueFactory(new PropertyValueFactory<>("end"));
+        
         //Set the table with the customerlist
         mainUpdateCustomerTableView();
+        //Set the table with the appointmentlist
+        mainUpdateCalendarTableView();
+        
     }    
     
     public void mainUpdateCustomerTableView() {
         updateCustomerList();
         customerTableView.setItems(CustomerList.getAllCustomers());
+    }
+    public void mainUpdateCalendarTableView() {
+        updateCalendarList();
+        calendarTableView.setItems(AppointmentList.getAllAppointments());
     }
 
     @FXML

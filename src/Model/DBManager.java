@@ -659,7 +659,69 @@ public class DBManager {
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        
+    }
+    
+    public static void updateCalendarList() {
+        //Create the list to populate it
+        ObservableList<Appointment> appList = AppointmentList.getAllAppointments();
+        //Make sure it is empty since we are going to populate the list from the DB
+        appList.clear();
+        String query = "SELECT appointmentId FROM appointment WHERE start > CURRENT_DATE";
+        ArrayList<Integer> appIdsList = new ArrayList<>();
+        createStatement();
+        try {
+            ResultSet appResultSet = createStmt.executeQuery(query);
+            while (appResultSet.next()) {
+                appIdsList.add(appResultSet.getInt("appointmentId"));
+            }
+            for (int appointmentId : appIdsList) {
+                query = "SELECT customerId, userId, title, description, location, contact, type, "
+                        + "url, start, end, createdBy, createDate FROM appointment "
+                        + "WHERE appointmentId = '"+ appointmentId +"'";
+                appResultSet = createStmt.executeQuery(query);
+                appResultSet.next();
+                //Set varibale information from the DB
+                int customerId = appResultSet.getInt("customerId");
+                int userId = appResultSet.getInt("userId");
+                String title = appResultSet.getString("title");
+                String description = appResultSet.getString("description");
+                String location = appResultSet.getString("location");
+                String contact = appResultSet.getString("contact");
+                String type = appResultSet.getString("type");
+                String url = appResultSet.getString("url");
+                Date start = appResultSet.getDate("start");
+                Date end = appResultSet.getDate("end");
+                String createdBy = appResultSet.getString("createdBy");
+                Date createdDate = appResultSet.getDate("createDate");
+                
+                //Get customerId
+                query = "SELECT customerName FROM customer WHERE customerId = '"+ customerId +"'";
+                appResultSet = createStmt.executeQuery(query);
+                appResultSet.next();
+                String customerName = appResultSet.getString("customerName");
+                
+                //Get userId
+                query = "SELECT userName FROM user WHERE userId = '"+ userId +"'";
+                appResultSet = createStmt.executeQuery(query);
+                appResultSet.next();
+                String userName = appResultSet.getString("userName");
+                
+                //Close connections
+                appResultSet.close();
+                createStmt.close();
+                conn.close();
+                //Create appointment
+                Appointment appointment = new Appointment(appointmentId, customerId, customerName, 
+                        userId, userName, title, description, location, contact, type, url, start, end, 
+                        createdBy, createdDate);
+                
+                //add appointment to the list
+                appList.add(appointment);
+            }            
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }    
     }
     
 }

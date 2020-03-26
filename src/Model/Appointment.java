@@ -10,29 +10,29 @@ import java.util.Date;
 public class Appointment {
     //Declare Fields
     private int appId, customerId, userId;
-    private String title, descriptions, location, contact, type, url, dateString, 
-                   startString, endString, createdBy, createdDateString;
-    private Timestamp startTime, endTime;
-    private Date startDate, endDate, createdDate;
+    private String customerName, userName, title, descriptions, location, contact, type, url, 
+                   createdBy;
+    private Date start, end, createdDate;
     
     
     //Create Constructor
-    public Appointment(int appId, int customerId, int userId, String title, String description,
-                       String location, String contact, String type, String url, Timestamp startTime,
-                       Timestamp endTime, Date startDate, Date endDate, String createdBy, Date createdDate) {
+    public Appointment(int appId, int customerId, String customerName, int userId, String userName, 
+            String title, String description, String location, String contact, String type, 
+            String url, Date start, Date end, String createdBy, Date createdDate) {
+        
         this.appId = appId;
         this.customerId = customerId;
+        this.customerName = customerName;
         this.userId = userId;
+        this.userName = userName;
         this.title = title;
         this.descriptions = description;
         this.location = location;
         this.contact = contact;
         this.type = type;
         this.url = url;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.start = start;
+        this.end = end;
         this.createdBy = createdBy;
         this.createdDate = createdDate;
     }
@@ -49,6 +49,14 @@ public class Appointment {
 
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public void setTitle(String title) {
@@ -75,47 +83,23 @@ public class Appointment {
         this.url = url;
     }
 
-    public void setDateString(String dateString) {
-        this.dateString = dateString;
-    }
-
-    public void setStartString(String startString) {
-        this.startString = startString;
-    }
-
-    public void setEndString(String endString) {
-        this.endString = endString;
-    }
-
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
     }
 
-    public void setCreatedDateString(String createdDateString) {
-        this.createdDateString = createdDateString;
+    public void setStart(Date start) {
+        this.start = start;
     }
 
-    public void setStartTime(Timestamp startTime) {
-        this.startTime = startTime;
-    }
-
-    public void setEndTime(Timestamp endTime) {
-        this.endTime = endTime;
-    }
-
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public void setEnd(Date end) {
+        this.end = end;
     }
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
     }
     
-    //Getters
+    //Getters    
 
     public int getAppId() {
         return appId;
@@ -127,6 +111,14 @@ public class Appointment {
 
     public int getUserId() {
         return userId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public String getUserName() {
+        return userName;
     }
 
     public String getTitle() {
@@ -153,40 +145,16 @@ public class Appointment {
         return url;
     }
 
-    public String getDateString() {
-        return dateString;
-    }
-
-    public String getStartString() {
-        return startString;
-    }
-
-    public String getEndString() {
-        return endString;
-    }
-
     public String getCreatedBy() {
         return createdBy;
     }
 
-    public String getCreatedDateString() {
-        return createdDateString;
+    public Date getStart() {
+        return start;
     }
 
-    public Timestamp getStartTime() {
-        return startTime;
-    }
-
-    public Timestamp getEndTime() {
-        return endTime;
-    }
-
-    public Date getStartDate() {
-        return startDate;
-    }
-
-    public Date getEndDate() {
-        return endDate;
+    public Date getEnd() {
+        return end;
     }
 
     public Date getCreatedDate() {
