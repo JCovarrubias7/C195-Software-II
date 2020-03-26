@@ -47,7 +47,7 @@
             <TableColumn fx:id="calendarTypeCol" prefWidth="185.0" text="Type" />
             <TableColumn fx:id="calendarLocationCol" prefWidth="185.0" text="Location" />
             <TableColumn fx:id="calendarStartTimeCol" prefWidth="277.0" text="Start Date and Time" />
-            <TableColumn fx:id="calendarEndTimeCol" prefWidth="278.0" text="End Date and Time" />
+            <TableColumn fx:id="calendarEndTimeCol" prefWidth="276.0" text="End Date and Time" />
         </columns>
          <GridPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -67,7 +67,7 @@
             <TableColumn fx:id="customerAddress2Col" prefWidth="190.0" text="Address Line 2" />
             <TableColumn fx:id="customerCityCol" prefWidth="222.0" text="City" />
             <TableColumn fx:id="customerCountryCol" prefWidth="160.0" text="Country" />
-            <TableColumn fx:id="customerPhoneCol" prefWidth="259.0" text="Phone" />
+            <TableColumn fx:id="customerPhoneCol" prefWidth="257.0" text="Phone" />
         </columns>
          <GridPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
