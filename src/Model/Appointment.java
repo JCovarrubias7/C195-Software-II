@@ -11,14 +11,14 @@ public class Appointment {
     //Declare Fields
     private int appId, customerId, userId;
     private String customerName, userName, title, descriptions, location, contact, type, url, 
-                   createdBy;
-    private Date start, end, createdDate;
+                   start, end, createdBy, createdDate;
+    //private Date createdDate;
     
     
     //Create Constructor
     public Appointment(int appId, int customerId, String customerName, int userId, String userName, 
             String title, String description, String location, String contact, String type, 
-            String url, Date start, Date end, String createdBy, Date createdDate) {
+            String url, String start, String end, String createdBy, String createdDate) {
         
         this.appId = appId;
         this.customerId = customerId;
@@ -87,15 +87,15 @@ public class Appointment {
         this.createdBy = createdBy;
     }
 
-    public void setStart(Date start) {
+    public void setStart(String start) {
         this.start = start;
     }
 
-    public void setEnd(Date end) {
+    public void setEnd(String end) {
         this.end = end;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
     }
     
@@ -149,15 +149,15 @@ public class Appointment {
         return createdBy;
     }
 
-    public Date getStart() {
+    public String getStart() {
         return start;
     }
 
-    public Date getEnd() {
+    public String getEnd() {
         return end;
     }
 
-    public Date getCreatedDate() {
+    public String getCreatedDate() {
         return createdDate;
     }
     

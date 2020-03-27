@@ -11,6 +11,12 @@ import static Model.DBManager.addNewAppointmentCheck;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -235,14 +241,30 @@ public class AddAppointmentController implements Initializable {
         String endMinutes = addApptEndMinuteCB.getValue();
         String endAMPM = addApptEndAMPMChoice.getValue();
         
+        //Convert the hours from a 12hour format to a 24hour format
         convertToTwentyFourHours(startHour, startAMPM);
-        String startDateTime = date + " " + hourAfterConvertion + ":" + startMinutes + ":00";
-        convertToTwentyFourHours(endHour, endAMPM);
-        String endDateTime= date + " " + hourAfterConvertion + ":" + startMinutes + ":00";
-        System.out.println(startDateTime);
-        System.out.println(endDateTime);
+        //Set the dateTime for the start of the appointment
+        LocalDateTime startLdt = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), Integer.parseInt(hourAfterConvertion), Integer.parseInt(startMinutes));
+        //Obtain the ZonedDateTime version of LocalDateTime
+        ZonedDateTime startLocalzdt = ZonedDateTime.of(startLdt, ZoneId.systemDefault());
+        //Obtain the UTC ZoneDateTime of the ZoneDateTime version of LocalDateTime
+        ZonedDateTime startUtcZdt = startLocalzdt.withZoneSameInstant(ZoneOffset.UTC);
+        //Convert ZoneDateTime to string
+        String stringStartZDT = startUtcZdt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         
-        addNewAppointmentCheck(customerId, title, description, location, contact, type, url, startDateTime, endDateTime);
+        //Convert the hours from a 12hour format to a 24hour format
+        convertToTwentyFourHours(endHour, endAMPM);
+       //Set the dateTime for the end of the appointment
+        LocalDateTime endLdt = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), Integer.parseInt(hourAfterConvertion), Integer.parseInt(endMinutes));
+        //Obtain the ZonedDateTime version of LocalDateTime
+        ZonedDateTime endLocalzdt = ZonedDateTime.of(endLdt, ZoneId.systemDefault());
+        //Obtain the UTC ZoneDateTime of the ZoneDateTime version of LocalDateTime
+        ZonedDateTime endUtcZdt = endLocalzdt.withZoneSameInstant(ZoneOffset.UTC);
+        //Convert ZoneDateTime to string
+        String stringEndZDT = endUtcZdt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        
+        
+        addNewAppointmentCheck(customerId, title, description, location, contact, type, url, stringStartZDT, stringEndZDT);
         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
         stage.setScene(new Scene(scene));
@@ -272,8 +294,7 @@ public class AddAppointmentController implements Initializable {
         }));
     }
     
-    //Convert the hours from 12hour format to 24hour format
-    private String convertToTwentyFourHours(String hour, String AMPM) {
+    private void convertToTwentyFourHours(String hour, String AMPM) {
         int intHour = Integer.valueOf(hour);
         if (AMPM.equals("PM")) {
             if (intHour == 12) {
@@ -287,7 +308,6 @@ public class AddAppointmentController implements Initializable {
             }
         }
         hourAfterConvertion = String.valueOf(intHour);
-        return hourAfterConvertion;
     }
     
 }

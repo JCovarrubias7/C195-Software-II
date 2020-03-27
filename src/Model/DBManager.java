@@ -1,8 +1,18 @@
 package Model;
 
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.TimeZone;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -511,8 +521,7 @@ public class DBManager {
                 addressSet.close();
                 citySet.close();
                 countrySet.close();
-                createStmt.close();
-                conn.close();
+                
                 
                 //Create customer with constructor
                 Customer customer = new Customer(customerId, name, addressId, active, 
@@ -521,6 +530,9 @@ public class DBManager {
                 //Add customer to the observableList customer
                 customerList.add(customer);
             }
+            //Close connection
+            createStmt.close();
+            conn.close();
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -613,7 +625,7 @@ public class DBManager {
             }
         }));
     }
-    
+        
     public static void addNewAppointmentCheck(int customerId, String title, String description, 
             String location, String contact, String type, String url, String startTime, String endTime) {
         
@@ -677,7 +689,7 @@ public class DBManager {
             for (int appointmentId : appIdsList) {
                 query = "SELECT customerId, userId, title, description, location, contact, type, "
                         + "url, start, end, createdBy, createDate FROM appointment "
-                        + "WHERE appointmentId = '"+ appointmentId +"'";
+                        + "WHERE appointmentId = '" + appointmentId + "'";
                 appResultSet = createStmt.executeQuery(query);
                 appResultSet.next();
                 //Set varibale information from the DB
@@ -689,39 +701,71 @@ public class DBManager {
                 String contact = appResultSet.getString("contact");
                 String type = appResultSet.getString("type");
                 String url = appResultSet.getString("url");
-                Date start = appResultSet.getDate("start");
-                Date end = appResultSet.getDate("end");
+                LocalDateTime start = appResultSet.getTimestamp("start").toLocalDateTime();
+                LocalDateTime end = appResultSet.getTimestamp("end").toLocalDateTime();
                 String createdBy = appResultSet.getString("createdBy");
-                Date createdDate = appResultSet.getDate("createDate");
-                
+                LocalDateTime createdDate = appResultSet.getTimestamp("createDate").toLocalDateTime();
+
                 //Get customerId
-                query = "SELECT customerName FROM customer WHERE customerId = '"+ customerId +"'";
+                query = "SELECT customerName FROM customer WHERE customerId = '" + customerId + "'";
                 appResultSet = createStmt.executeQuery(query);
                 appResultSet.next();
                 String customerName = appResultSet.getString("customerName");
-                
+
                 //Get userId
-                query = "SELECT userName FROM user WHERE userId = '"+ userId +"'";
+                query = "SELECT userName FROM user WHERE userId = '" + userId + "'";
                 appResultSet = createStmt.executeQuery(query);
                 appResultSet.next();
                 String userName = appResultSet.getString("userName");
                 
-                //Close connections
-                appResultSet.close();
-                createStmt.close();
-                conn.close();
-                //Create appointment
-                Appointment appointment = new Appointment(appointmentId, customerId, customerName, 
-                        userId, userName, title, description, location, contact, type, url, start, end, 
-                        createdBy, createdDate);
+               
+                //Set the dateTime for the start of the appointment
+                //Set the format of the Date and Time Month day, year Time
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy @ hh:mm a");
+                //Get UTC time
+                Instant instant = start.toInstant(ZoneOffset.UTC);
+                //UTC IS a time zone, we just have to adjust to our time zone
+                //so this instant(the UTC) is zdt at this zone (systemDefault
+                ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault());
+                //Convert ZoneDateTime to string
                 
+                String stringStart = zdt.format(formatter);
+                System.out.println("start =" + start);
+                System.out.println("instant = " + instant);
+                System.out.println("zdt = " + zdt);
+                System.out.println("String of zdtldt = " + stringStart);
+                
+                //Get UTC time
+                Instant instantEnd = end.toInstant(ZoneOffset.UTC);
+                //UTC IS a time zone, we just have to adjust to our time zone
+                //so this instant(the UTC) is zdt at this zone (systemDefault
+                ZonedDateTime zdtEnd = instantEnd.atZone(ZoneId.systemDefault());
+                //Convert ZoneDateTime to string
+                String stringEnd = zdtEnd.format(formatter);
+                
+                //Set the dateTime for the createdDate of the appointment
+                createdDate = LocalDateTime.of(createdDate.getYear(), createdDate.getMonth(), createdDate.getDayOfMonth(), createdDate.getHour(), createdDate.getMinute());
+                //Obtain the ZonedDateTime version of LocalDateTime
+                ZonedDateTime createdDateLocalzdt = ZonedDateTime.of(createdDate, ZoneId.systemDefault());
+                //Convert ZoneDateTime to string
+                String stringCreatedDate = createdDateLocalzdt.format(formatter);
+
+                //Create appointment
+                Appointment appointment = new Appointment(appointmentId, customerId, customerName,
+                        userId, userName, title, description, location, contact, type, url, stringStart, stringEnd,
+                        createdBy, stringCreatedDate);
+
                 //add appointment to the list
                 appList.add(appointment);
-            }            
-        }
+            }
+            //Close connections
+            appResultSet.close();
+            createStmt.close();
+            conn.close();
+        } 
         catch (SQLException e) {
             System.out.println(e.getMessage());
-        }    
+        }
     }
     
 }
