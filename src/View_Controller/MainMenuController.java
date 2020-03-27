@@ -5,6 +5,7 @@ import Model.AppointmentList;
 import Model.Customer;
 import Model.CustomerList;
 import static Model.DBManager.closeConnection;
+import static Model.DBManager.deleteAppointmentFromDataBase;
 import static Model.DBManager.setCustomerToInactive;
 import static Model.DBManager.updateCalendarList;
 import static Model.DBManager.updateCustomerList;
@@ -121,6 +122,19 @@ public class MainMenuController implements Initializable {
 
     @FXML
     private void mainAppointmentDelete(ActionEvent event) {
+        //Get selected appointment
+        Appointment selectedAppt = calendarTableView.getSelectionModel().getSelectedItem();
+        //Create a warning dialog box letting the user know no appointment is selected
+        if (selectedAppt == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "There are no appointment to delete or select a appointment to delete");
+            alert.setTitle("No Appointment Selected");
+            alert.showAndWait();
+        }
+        else {
+            deleteAppointmentFromDataBase(selectedAppt);
+            //Set the table with the appointmentlist
+            mainUpdateCalendarTableView();
+        }
     }
 
     @FXML

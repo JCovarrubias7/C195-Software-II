@@ -768,4 +768,26 @@ public class DBManager {
         }
     }
     
+    //Create a method to delete Appointment from Database
+    public static void deleteAppointmentFromDataBase(Appointment selectedAppt) {
+        int apptId = selectedAppt.getAppId();
+        String query = "DELETE FROM appointment WHERE appointmentId = '"+ apptId +"' ";
+        createStatement();
+        //Create a confirmation dialog box to confirm deletion of appointment
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete Appointment? Press OK to delete");
+        alert.setTitle("Confirm Delete");
+        alert.showAndWait().ifPresent((response -> {  //quick lambda
+            if (response == ButtonType.OK) {
+                try {
+                    createStmt.executeUpdate(query);
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            } else {
+                alert.close();
+            }
+        }));
+        updateCalendarList();
+    }
+ 
 }
