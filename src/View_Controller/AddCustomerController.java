@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package View_Controller;
 
 import static Model.DBManager.addNewCustomerChecks;
@@ -25,7 +20,7 @@ import javafx.stage.Stage;
 /**
  * FXML Controller class
  *
- * @author Se7en
+ * @author Jorge Covarrubias
  */
 public class AddCustomerController implements Initializable {
     
