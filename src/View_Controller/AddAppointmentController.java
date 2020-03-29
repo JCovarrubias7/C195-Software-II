@@ -248,7 +248,7 @@ public class AddAppointmentController implements Initializable {
         
         //Convert the hours from a 12hour format to a 24hour format
         convertToTwentyFourHours(endHour, endAMPM);
-       //Set the dateTime for the end of the appointment
+        //Set the dateTime for the end of the appointment
         LocalDateTime endLdt = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), Integer.parseInt(hourAfterConvertion), Integer.parseInt(endMinutes));
         //Obtain the ZonedDateTime version of LocalDateTime
         ZonedDateTime endLocalzdt = ZonedDateTime.of(endLdt, ZoneId.systemDefault());

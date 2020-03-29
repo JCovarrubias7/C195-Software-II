@@ -8,6 +8,7 @@ package View_Controller;
 import Model.Appointment;
 import Model.Customer;
 import Model.CustomerList;
+import static Model.DBManager.modAppointmentCheck;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
@@ -15,6 +16,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -56,6 +59,7 @@ public class ModifyAppointmentController implements Initializable {
     ObservableList<Customer> associatedList = FXCollections.observableArrayList();
     String hourAfterConvertion;
     int customerId = 0;
+    int appointmentId;
 
     @FXML
     private TextField modApptTypeField;
@@ -154,6 +158,9 @@ public class ModifyAppointmentController implements Initializable {
                 associatedList.add(customer);
             }
         }
+        
+        //Set appintmentId
+        appointmentId = appointment.getAppId();
     }
 
     /**
@@ -269,8 +276,56 @@ public class ModifyAppointmentController implements Initializable {
     }
 
     @FXML
-    private void modAppSaveButton(ActionEvent event) {
+    private void modAppSaveButton(ActionEvent event) throws IOException {
+        //Check for customerId, if nothing, create a warning
+        if(customerId == 0) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "There is no customer added to create the appointment");
+            alert.setTitle("No Customer Associated");
+            alert.showAndWait();
+        }
         
+        String type = modApptTypeField.getText();
+        String title = modApptTitleField.getText();
+        String description = modApptDescriptionField.getText();
+        String location = modApptLocationField.getText();
+        String contact = modApptContactField.getText();
+        String url = modApptURLField.getText();
+        LocalDate date = modApptDateField.getValue();
+        String startHour = modApptStartHourCB.getValue();
+        String startMinutes = modApptStartMinuteCB.getValue();
+        String startAMPM = modApptStartAMPMChoice.getValue();
+        String endHour = modApptEndHourCB.getValue();
+        String endMinutes = modApptEndMinuteCB.getValue();
+        String endAMPM = modApptEndAMPMChoice.getValue();
+        
+        //Convert the hours from a 12hour format to a 24hour format
+        convertToTwentyFourHours(startHour, startAMPM);
+        //Set the dateTime for the start of the appointment
+        LocalDateTime startLdt = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), Integer.parseInt(hourAfterConvertion), Integer.parseInt(startMinutes));
+        //Obtain the ZonedDateTime version of LocalDateTime
+        ZonedDateTime startLocalzdt = ZonedDateTime.of(startLdt, ZoneId.systemDefault());
+        //Obtain the UTC ZoneDateTime of the ZoneDateTime version of LocalDateTime
+        ZonedDateTime startUtcZdt = startLocalzdt.withZoneSameInstant(ZoneOffset.UTC);
+        //Convert ZoneDateTime to string
+        String stringStartZDT = startUtcZdt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        
+        //Convert the hours from a 12hour format to a 24hour format
+        convertToTwentyFourHours(endHour, endAMPM);
+        //Set the dateTime for the end of the appointment
+        LocalDateTime endLdt = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), Integer.parseInt(hourAfterConvertion), Integer.parseInt(endMinutes));
+        //Obtain the ZonedDateTime version of LocalDateTime
+        ZonedDateTime endLocalzdt = ZonedDateTime.of(endLdt, ZoneId.systemDefault());
+        //Obtain the UTC ZoneDateTime of the ZoneDateTime version of LocalDateTime
+        ZonedDateTime endUtcZdt = endLocalzdt.withZoneSameInstant(ZoneOffset.UTC);
+        //Convert ZoneDateTime to string
+        String stringEndZDT = endUtcZdt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        
+        modAppointmentCheck(appointmentId, customerId, title, description, location, contact, type, url, stringStartZDT, stringEndZDT);
+        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
+        stage.setScene(new Scene(scene));
+        stage.setTitle("Appointment System - Main Menu");
+        stage.show();
     }
 
     @FXML
@@ -295,4 +350,20 @@ public class ModifyAppointmentController implements Initializable {
         }));
     }
     
+        private void convertToTwentyFourHours(String hour, String AMPM) {
+        int intHour = Integer.valueOf(hour);
+        if (AMPM.equals("PM")) {
+            if (intHour == 12) {
+                intHour = 12;
+            } else {
+                intHour = intHour + 12;
+            }
+        } else {
+            if (intHour == 12) {
+                intHour = 00;
+            }
+        }
+        hourAfterConvertion = String.valueOf(intHour);
+    }
+        
 }

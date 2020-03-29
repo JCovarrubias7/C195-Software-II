@@ -596,7 +596,6 @@ public class DBManager {
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        
     }
     
     //Set customer to inactive
@@ -667,6 +666,34 @@ public class DBManager {
             prepStmt.setString(5, type);
             prepStmt.setString(6, url);
             prepStmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static void modAppointmentCheck(int appointmentId, int customerId, String title, String description, 
+            String location, String contact, String type, String url, String startTime, String endTime) {
+        //TODO validationchecks
+        modifyAppointment(appointmentId, customerId, title, description, location, contact, type, url, startTime, endTime);
+    }
+    
+    private static void modifyAppointment(int appointmentId, int customerId, String title, String description, 
+            String location, String contact, String type, String url, String startTime, String endTime) {
+        
+        //Set query to update the appointment in the Database
+        String query = "UPDATE appointment SET customerId = '"+ customerId +"', title = ?, "
+                + "description = ?, location = ?, contact = ?, type = ?, url = ?, start = '"+ startTime +"', "
+                + "end = '"+ endTime +"' WHERE appointmentId = '"+ appointmentId +"'";
+        preparedStatement(query);
+        try {
+           prepStmt.setString(1, title);
+           prepStmt.setString(2, description);
+           prepStmt.setString(3, location);
+           prepStmt.setString(4, contact);
+           prepStmt.setString(5, type);
+           prepStmt.setString(6, url);
+           prepStmt.executeUpdate();
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());
