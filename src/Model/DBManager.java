@@ -463,7 +463,7 @@ public class DBManager {
     
     //Populate the customer list from the DB
     public static void updateCustomerList() {
-        //Create the list to populate to
+        //Create the list to populate to the tableview
         ObservableList<Customer> customerList = CustomerList.getAllCustomers();
         //Make sure it is empty since we are going to populate the list from the DB
         customerList.clear();
@@ -726,13 +726,13 @@ public class DBManager {
                 Instant instant = start.toInstant(ZoneOffset.UTC);
                 //UTC IS a time zone, we just have to adjust to our time zone
                 //so this instant(the UTC) is zdt at this zone (systemDefault
-                ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault());
+                ZonedDateTime zdtStart = instant.atZone(ZoneId.systemDefault());
                 //Convert ZoneDateTime to string
                 
-                String stringStart = zdt.format(formatter);
+                String stringStart = zdtStart.format(formatter);
                 System.out.println("start =" + start);
                 System.out.println("instant = " + instant);
-                System.out.println("zdt = " + zdt);
+                System.out.println("zdt = " + zdtStart);
                 System.out.println("String of zdtldt = " + stringStart);
                 
                 //Get UTC time
@@ -753,7 +753,7 @@ public class DBManager {
                 //Create appointment
                 Appointment appointment = new Appointment(appointmentId, customerId, customerName,
                         userId, userName, title, description, location, contact, type, url, stringStart, stringEnd,
-                        createdBy, stringCreatedDate);
+                        createdBy, stringCreatedDate, zdtStart, zdtEnd);
 
                 //add appointment to the list
                 appList.add(appointment);
@@ -789,5 +789,5 @@ public class DBManager {
         }));
         updateCalendarList();
     }
- 
+
 }

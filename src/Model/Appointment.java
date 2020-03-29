@@ -1,5 +1,7 @@
 package Model;
 
+import java.time.ZonedDateTime;
+
 
 /**
  *
@@ -10,13 +12,14 @@ public class Appointment {
     private int appId, customerId, userId;
     private String customerName, userName, title, descriptions, location, contact, type, url, 
                    start, end, createdBy, createdDate;
-    //private Date createdDate;
+    private ZonedDateTime zdtStart, zdtEnd;
     
     
     //Create Constructor
     public Appointment(int appId, int customerId, String customerName, int userId, String userName, 
             String title, String description, String location, String contact, String type, 
-            String url, String start, String end, String createdBy, String createdDate) {
+            String url, String start, String end, String createdBy, String createdDate, 
+            ZonedDateTime zdtStart, ZonedDateTime zdtEnd) {
         
         this.appId = appId;
         this.customerId = customerId;
@@ -33,6 +36,8 @@ public class Appointment {
         this.end = end;
         this.createdBy = createdBy;
         this.createdDate = createdDate;
+        this.zdtStart = zdtStart;
+        this.zdtEnd = zdtEnd;
     }
     
     //Setters
@@ -96,6 +101,15 @@ public class Appointment {
     public void setCreatedDate(String createdDate) {
         this.createdDate = createdDate;
     }
+
+    public void setZdtStart(ZonedDateTime zdtStart) {
+        this.zdtStart = zdtStart;
+    }
+
+    public void setZdtEnd(ZonedDateTime zdtEnd) {
+        this.zdtEnd = zdtEnd;
+    }
+   
     
     //Getters    
 
@@ -158,6 +172,13 @@ public class Appointment {
     public String getCreatedDate() {
         return createdDate;
     }
-    
+
+    public ZonedDateTime getZdtStart() {
+        return zdtStart;
+    }
+
+    public ZonedDateTime getZdtEnd() {
+        return zdtEnd;
+    }
     
 }

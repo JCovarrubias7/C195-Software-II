@@ -117,7 +117,29 @@ public class MainMenuController implements Initializable {
     }
 
     @FXML
-    private void mainAppointmentModify(ActionEvent event) {
+    private void mainAppointmentModify(ActionEvent event) throws IOException {
+        //Grab the selected appointment from the tableView
+        Appointment selectedAppt = calendarTableView.getSelectionModel().getSelectedItem();
+        //Create a warning dialog box letting the user know that no appointment has been selected to modify
+        if (selectedAppt == null) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "There is no appointment selected to modify");
+            alert.setTitle("No Appointment Selected");
+            alert.showAndWait();
+        } 
+        else {
+            //Send the selected part to the PartModify controller
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/View_Controller/ModifyAppointment.fxml"));
+            loader.load();
+            ModifyAppointmentController MAController = loader.getController();
+            MAController.sendAppt(selectedAppt);
+
+            stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+            Parent scene = loader.getRoot();
+            stage.setScene(new Scene(scene));
+            stage.setTitle("Appointment System - Modify Appointment");
+            stage.show();
+        }
     }
 
     @FXML
@@ -155,7 +177,7 @@ public class MainMenuController implements Initializable {
     private void mainCustomerModify(ActionEvent event) throws IOException {
         //Grab the selected customer from the tableView
         Customer selectedCustomer = customerTableView.getSelectionModel().getSelectedItem();
-        //Create a warning dialog box letting the user know that no customer has been selected to delete
+        //Create a warning dialog box letting the user know that no customer has been selected to modify
         if (selectedCustomer == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "There is no customer selected to modify");
             alert.setTitle("No Customer Selected");

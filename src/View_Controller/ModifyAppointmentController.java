@@ -1,15 +1,20 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package View_Controller;
 
+import Model.Appointment;
 import Model.Customer;
 import Model.CustomerList;
-import static Model.DBManager.addNewAppointmentCheck;
 import java.io.IOException;
 import java.net.URL;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -39,9 +44,9 @@ import javafx.stage.Stage;
 /**
  * FXML Controller class
  *
- * @author Jorge Covarrubias
+ * @author Se7en
  */
-public class AddAppointmentController implements Initializable {
+public class ModifyAppointmentController implements Initializable {
     
     //Define Fields
     Stage stage;
@@ -53,35 +58,35 @@ public class AddAppointmentController implements Initializable {
     int customerId = 0;
 
     @FXML
-    private TextField addApptTypeField;
+    private TextField modApptTypeField;
     @FXML
-    private TextField addApptTitleField;
+    private TextField modApptTitleField;
     @FXML
-    private TextArea addApptDescriptionField;
+    private TextArea modApptDescriptionField;
     @FXML
-    private TextField addApptLocationField;
+    private TextField modApptLocationField;
     @FXML
-    private TextField addApptContactField;
+    private TextField modApptContactField;
     @FXML
-    private TextField addApptURLField;
+    private TextField modApptURLField;
     @FXML
-    private DatePicker addApptDateField;
+    private DatePicker modApptDateField;
     @FXML
-    private ComboBox<String> addApptStartHourCB;
+    private ComboBox<String> modApptStartHourCB;
     @FXML
-    private ComboBox<String> addApptStartMinuteCB;
+    private ComboBox<String> modApptStartMinuteCB;
     @FXML
-    private ChoiceBox<String> addApptStartAMPMChoice;
+    private ChoiceBox<String> modApptStartAMPMChoice;
     @FXML
-    private ComboBox<String> addApptEndHourCB;
+    private ComboBox<String> modApptEndHourCB;
     @FXML
-    private ComboBox<String> addApptEndMinuteCB;
+    private ComboBox<String> modApptEndMinuteCB;
     @FXML
-    private ChoiceBox<String> addApptEndAMPMChoice;
+    private ChoiceBox<String> modApptEndAMPMChoice;
     @FXML
-    private TextField addApptSearchField;
+    private TextField modApptSearchField;
     @FXML
-    private TableView<Customer> addApptCustomerTableView;
+    private TableView<Customer> modApptCustomerTableView;
     @FXML
     private TableColumn<Customer, String> customersNameCol;
     @FXML
@@ -91,7 +96,7 @@ public class AddAppointmentController implements Initializable {
     @FXML
     private TableColumn<Customer, String> customersPhoneCol;
     @FXML
-    private TableView<Customer> addApptAssociatedCustomer;
+    private TableView<Customer> modApptAssociatedCustomer;
     @FXML
     private TableColumn<Customer, String> associatedNameCol;
     @FXML
@@ -100,6 +105,56 @@ public class AddAppointmentController implements Initializable {
     private TableColumn<Customer, String> associatedCountryCol;
     @FXML
     private TableColumn<Customer, String> associatedPhoneCol;
+    
+    public void sendAppt(Appointment appointment) {
+        modApptTypeField.setText(appointment.getType());
+        modApptTitleField.setText(appointment.getTitle());
+        modApptDescriptionField.setText(appointment.getDescriptions());
+        modApptLocationField.setText(appointment.getLocation());
+        modApptContactField.setText(appointment.getContact());
+        modApptURLField.setText(appointment.getUrl());
+        
+        //Set the start time instant from the UTC ZoneDateTime in the appointment
+        Instant startInstant = appointment.getZdtStart().toInstant();
+ 
+        //Convert the UTC date to local time and get the Date
+        LocalDateTime startLocalDateTime = LocalDateTime.ofInstant(startInstant, ZoneId.systemDefault());
+        int startYear = startLocalDateTime.getYear();
+        Month startMonth = startLocalDateTime.getMonth();
+        int startDay = startLocalDateTime.getDayOfMonth();
+        LocalDate startLocalDate = LocalDate.of(startYear, startMonth, startDay);
+        
+        //Create the format to get the 12hour version of the hour from the LocalDateTime
+        DateTimeFormatter hourFormatter = DateTimeFormatter.ofPattern("hh");
+        //Create the format to get the minutes from the LocalDateTime
+        DateTimeFormatter minutesFormatter = DateTimeFormatter.ofPattern("mm");
+        //Create the format to get the AM PM from the LocalDateTime
+        DateTimeFormatter AmPmFormatter = DateTimeFormatter.ofPattern("a");
+        
+        modApptDateField.setValue(startLocalDate);
+        modApptStartHourCB.setValue(String.valueOf(hourFormatter.format(startLocalDateTime)));
+        modApptStartMinuteCB.setValue(String.valueOf(minutesFormatter.format(startLocalDateTime)));
+        modApptStartAMPMChoice.setValue(AmPmFormatter.format(startLocalDateTime));
+        
+        //Set the start time instant from the UTC ZoneDateTime in the appointment
+        Instant endInstant = appointment.getZdtEnd().toInstant();
+        //Convert the UTC date to local time and get the Date
+        LocalDateTime endLocalDateTime = LocalDateTime.ofInstant(endInstant, ZoneId.systemDefault());
+        
+        modApptEndHourCB.setValue(String.valueOf(hourFormatter.format(endLocalDateTime)));
+        modApptEndMinuteCB.setValue(String.valueOf(minutesFormatter.format(endLocalDateTime)));
+        modApptEndAMPMChoice.setValue(String.valueOf(AmPmFormatter.format(endLocalDateTime)));
+        
+        //Set the customer Id from the appointment 
+        customerId = appointment.getCustomerId();
+        //Create the list to populate to retrieve the customerName from
+        ObservableList<Customer> customerList = CustomerList.getAllCustomers();
+        for (Customer customer : customerList) {
+            if (customer.getId() == customerId) {
+                associatedList.add(customer);
+            }
+        }
+    }
 
     /**
      * Initializes the controller class.
@@ -107,19 +162,20 @@ public class AddAppointmentController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-        // Set the hours and minutes for the Combo boxes
+        
+        //Set the hours and minutes for the Combo boxes
         hours.addAll("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
         minutes.addAll("00", "15", "30", "45");
         
         //Set the lists to the ComboBox
-        addApptStartHourCB.setItems(hours);
-        addApptStartMinuteCB.setItems(minutes);
-        addApptEndHourCB.setItems(hours);
-        addApptEndMinuteCB.setItems(minutes);
+        modApptStartHourCB.setItems(hours);
+        modApptStartMinuteCB.setItems(minutes);
+        modApptEndHourCB.setItems(hours);
+        modApptEndMinuteCB.setItems(minutes);
         
         //Set the tableView to the customer list already created
-        addApptCustomerTableView.setItems(CustomerList.getAllCustomers());
-        addApptAssociatedCustomer.setItems(associatedList);
+        modApptCustomerTableView.setItems(CustomerList.getAllCustomers());
+        modApptAssociatedCustomer.setItems(associatedList);
         
         //Set up the customers columns to go get the specific info from the customer object
         customersNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -135,8 +191,8 @@ public class AddAppointmentController implements Initializable {
     }    
 
     @FXML
-    private void addApptSearchOnActionButton(ActionEvent event) {
-        String partSearchFieldTxt = addApptSearchField.getText();
+    private void modApptSearchOnActionButton(ActionEvent event) {
+        String partSearchFieldTxt = modApptSearchField.getText();
         //Create warning dialog box for empty search field
         if (partSearchFieldTxt.equals("")) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please enter an name of a customer to search");
@@ -150,7 +206,7 @@ public class AddAppointmentController implements Initializable {
             
             if (filteredCustomerList.size() > 0) {
                 found = true;
-                addApptCustomerTableView.setItems(filteredCustomerList);
+                modApptCustomerTableView.setItems(filteredCustomerList);
             }
             if (found == false) {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "The item searched was not found in Inventory");
@@ -161,8 +217,8 @@ public class AddAppointmentController implements Initializable {
     }
 
     @FXML
-    private void addApptAddCustomerButton(ActionEvent event) {
-        Customer customer = addApptCustomerTableView.getSelectionModel().getSelectedItem();
+    private void modApptAddCustomerButton(ActionEvent event) {
+        Customer customer = modApptCustomerTableView.getSelectionModel().getSelectedItem();
          //Create a dialog box warning if no custer was selected to associate with the product
         if (customer == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a customer");
@@ -183,10 +239,10 @@ public class AddAppointmentController implements Initializable {
             }
         }
     }
-    
+
     @FXML
-    private void addApptDeleteAssociatedButton(ActionEvent event){ 
-        Customer customer = addApptAssociatedCustomer.getSelectionModel().getSelectedItem();
+    private void modApptDeleteAssociatedButton(ActionEvent event) {
+        Customer customer = modApptAssociatedCustomer.getSelectionModel().getSelectedItem();
         //Create dialog box for no customer selected to delete
         if(customer == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "There are no customers to delete or select a customer to delete");
@@ -211,65 +267,16 @@ public class AddAppointmentController implements Initializable {
 //            }
         }
     }
-    
+
     @FXML
-    private void addAppSaveButton(ActionEvent event) throws IOException{ 
-        //Check for customerId, if nothing, create a warning
-        if(customerId == 0) {
-            Alert alert = new Alert(Alert.AlertType.WARNING, "There is no customer added to create the appointment");
-            alert.setTitle("No Customer Associated");
-            alert.showAndWait();
-        }
+    private void modAppSaveButton(ActionEvent event) {
         
-        String type = addApptTypeField.getText();
-        String title = addApptTitleField.getText();
-        String description = addApptDescriptionField.getText();
-        String location = addApptLocationField.getText();
-        String contact = addApptContactField.getText();
-        String url = addApptURLField.getText();
-        LocalDate date = addApptDateField.getValue();
-        String startHour = addApptStartHourCB.getValue();
-        String startMinutes = addApptStartMinuteCB.getValue();
-        String startAMPM = addApptStartAMPMChoice.getValue();
-        String endHour = addApptEndHourCB.getValue();
-        String endMinutes = addApptEndMinuteCB.getValue();
-        String endAMPM = addApptEndAMPMChoice.getValue();
-        
-        //Convert the hours from a 12hour format to a 24hour format
-        convertToTwentyFourHours(startHour, startAMPM);
-        //Set the dateTime for the start of the appointment
-        LocalDateTime startLdt = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), Integer.parseInt(hourAfterConvertion), Integer.parseInt(startMinutes));
-        //Obtain the ZonedDateTime version of LocalDateTime
-        ZonedDateTime startLocalzdt = ZonedDateTime.of(startLdt, ZoneId.systemDefault());
-        //Obtain the UTC ZoneDateTime of the ZoneDateTime version of LocalDateTime
-        ZonedDateTime startUtcZdt = startLocalzdt.withZoneSameInstant(ZoneOffset.UTC);
-        //Convert ZoneDateTime to string
-        String stringStartZDT = startUtcZdt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        
-        //Convert the hours from a 12hour format to a 24hour format
-        convertToTwentyFourHours(endHour, endAMPM);
-       //Set the dateTime for the end of the appointment
-        LocalDateTime endLdt = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), Integer.parseInt(hourAfterConvertion), Integer.parseInt(endMinutes));
-        //Obtain the ZonedDateTime version of LocalDateTime
-        ZonedDateTime endLocalzdt = ZonedDateTime.of(endLdt, ZoneId.systemDefault());
-        //Obtain the UTC ZoneDateTime of the ZoneDateTime version of LocalDateTime
-        ZonedDateTime endUtcZdt = endLocalzdt.withZoneSameInstant(ZoneOffset.UTC);
-        //Convert ZoneDateTime to string
-        String stringEndZDT = endUtcZdt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
-        
-        
-        addNewAppointmentCheck(customerId, title, description, location, contact, type, url, stringStartZDT, stringEndZDT);
-        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
-        stage.setScene(new Scene(scene));
-        stage.setTitle("Appointment System - Main Menu");
-        stage.show();
     }
-    
+
     @FXML
-    private void addAppCancelButton(ActionEvent event){
-        //Create a confirmation dialog box to confirm cancelation of creating an appointment
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel creating an appointment? Press OK to cancel.");
+    private void modAppCancelButton(ActionEvent event) {
+        //Create a confirmation dialog box to confirm cancelation of modifying an appointment
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel modifying an appointment? Press OK to cancel.");
         alert.setTitle("Confirm Cancelation");
         alert.showAndWait().ifPresent((response -> {  //quick lambda
             if (response == ButtonType.OK) {
@@ -286,22 +293,6 @@ public class AddAppointmentController implements Initializable {
                 alert.close();
             }
         }));
-    }
-    
-    private void convertToTwentyFourHours(String hour, String AMPM) {
-        int intHour = Integer.valueOf(hour);
-        if (AMPM.equals("PM")) {
-            if (intHour == 12) {
-                intHour = 12;
-            } else {
-                intHour = intHour + 12;
-            }
-        } else {
-            if (intHour == 12) {
-                intHour = 00;
-            }
-        }
-        hourAfterConvertion = String.valueOf(intHour);
     }
     
 }
