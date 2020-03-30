@@ -831,9 +831,9 @@ public class DBManager {
         Instant instant = Instant.now();
         int instantMonth = instant.atZone(ZoneId.systemDefault()).getMonthValue();
         for (Appointment appointment : appList) {
-            if(appointment.getZdtStart().getMonthValue() == instantMonth + 1) {
+            if(appointment.getZdtStart().getMonthValue() == instantMonth) {
                 System.out.println(appointment.getZdtStart().getMonthValue());
-                System.out.println(instant.atZone(ZoneId.systemDefault()).getMonthValue() + 1);
+                System.out.println(instant.atZone(ZoneId.systemDefault()).getMonthValue());
                 System.out.println(instantMonth);
                 monthlyList.add(appointment);
             }
