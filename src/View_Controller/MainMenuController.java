@@ -6,13 +6,18 @@ import Model.Customer;
 import Model.CustomerList;
 import static Model.DBManager.closeConnection;
 import static Model.DBManager.deleteAppointmentFromDataBase;
+import static Model.DBManager.monthlyCalendarList;
 import static Model.DBManager.setCustomerToInactive;
 import static Model.DBManager.updateCalendarList;
 import static Model.DBManager.updateCustomerList;
+import static Model.DBManager.weeklyCalendarList;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -217,10 +222,24 @@ public class MainMenuController implements Initializable {
 
     @FXML
     private void mainWeeklyView(ActionEvent event) {
+        ObservableList<Appointment> weeklyList = FXCollections.observableArrayList();
+        weeklyCalendarList(weeklyList);
+        //Crete comparator
+        Comparator<Appointment> appointmentComparator = Comparator.comparing(Appointment::getZdtStart);
+        weeklyList.sort(appointmentComparator);
+        
+        calendarTableView.setItems(weeklyList);
     }
 
     @FXML
     private void mainMonthlyView(ActionEvent event) {
+        ObservableList<Appointment> monthlyList = FXCollections.observableArrayList();
+        monthlyCalendarList(monthlyList);
+        //Crete comparator
+        Comparator<Appointment> appointmentComparator = Comparator.comparing(Appointment::getZdtStart);
+        monthlyList.sort(appointmentComparator);
+        
+        calendarTableView.setItems(monthlyList);
     }
     
     @FXML

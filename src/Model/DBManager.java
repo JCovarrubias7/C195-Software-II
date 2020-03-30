@@ -1,18 +1,17 @@
 package Model;
 
 import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Optional;
-import java.util.TimeZone;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -816,5 +815,58 @@ public class DBManager {
         }));
         updateCalendarList();
     }
+    
+    public static ObservableList<Appointment> monthlyCalendarList(ObservableList<Appointment> monthlyList) {
+        //Get all the appointments from the AppointmentList
+        ObservableList<Appointment> appList = AppointmentList.getAllAppointments();
+        
+        //Create a warning because there is no appointments in the databse to show in the monthly view
+        if(appList.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "There are no appointments to sort. Add appointments to use this feature");
+            alert.setTitle("No Appointments");
+            alert.showAndWait();
+        }
+        
+        //Get the time at this moment.
+        Instant instant = Instant.now();
+        int instantMonth = instant.atZone(ZoneId.systemDefault()).getMonthValue();
+        for (Appointment appointment : appList) {
+            if(appointment.getZdtStart().getMonthValue() == instantMonth + 1) {
+                System.out.println(appointment.getZdtStart().getMonthValue());
+                System.out.println(instant.atZone(ZoneId.systemDefault()).getMonthValue() + 1);
+                System.out.println(instantMonth);
+                monthlyList.add(appointment);
+            }
+        }
+        return monthlyList;
+    }
+    
+    public static ObservableList<Appointment> weeklyCalendarList(ObservableList<Appointment> weeklyList) {
+        //Get all the appointments from the AppointmentList
+        ObservableList<Appointment> appList = AppointmentList.getAllAppointments();
+        
+        //Create a warning because there is no appointments in the databse to show in the monthly view
+        if(appList.isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING, "There are no appointments to sort. Add appointments to use this feature");
+            alert.setTitle("No Appointments");
+            alert.showAndWait();
+        }
+         //Get the time at this moment.
+        Instant instant = Instant.now();
+        ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault());
+        TemporalField weekField = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
+        int weekOfYear = zdt.get(weekField);
+        for (Appointment appointment : appList) {
+            ZonedDateTime appointmentZDT = appointment.getZdtStart();
+            int appointmentWeek = appointmentZDT.get(weekField);
+            if(appointmentWeek == weekOfYear) {
+                System.out.println("week of year  " + weekOfYear);
+                System.out.println("week of APPT  " + appointmentWeek);
+                weeklyList.add(appointment);
+            }
+        }
+        return weeklyList;
+    }
+    
 
 }
