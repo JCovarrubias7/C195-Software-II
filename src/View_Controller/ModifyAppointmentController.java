@@ -109,6 +109,8 @@ public class ModifyAppointmentController implements Initializable {
     private TableColumn<Customer, String> associatedCountryCol;
     @FXML
     private TableColumn<Customer, String> associatedPhoneCol;
+    @FXML
+    private Button modApptDeleteButton;
     
     public void sendAppt(Appointment appointment) {
         modApptTypeField.setText(appointment.getType());
@@ -156,6 +158,8 @@ public class ModifyAppointmentController implements Initializable {
         for (Customer customer : customerList) {
             if (customer.getId() == customerId) {
                 associatedList.add(customer);
+                //Set the Delete Button to be enabled
+                modApptDeleteButton.setDisable(false);
             }
         }
         
@@ -238,6 +242,8 @@ public class ModifyAppointmentController implements Initializable {
                 associatedList.add(customer);
                 //Set customerId
                 customerId = customer.getId();
+                //Set the delete button to be enabled
+                modApptDeleteButton.setDisable(false);
             }
             else {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "A customer has already been added");
@@ -266,6 +272,8 @@ public class ModifyAppointmentController implements Initializable {
                 associatedList.remove(customer);
                 //Clear customerId
                 customerId = 0;
+                //Set the Delete button to be disabled
+                modApptDeleteButton.setDisable(true);
             } else {
                 alert.close();
             }

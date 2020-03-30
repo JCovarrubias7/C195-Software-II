@@ -100,6 +100,8 @@ public class AddAppointmentController implements Initializable {
     private TableColumn<Customer, String> associatedCountryCol;
     @FXML
     private TableColumn<Customer, String> associatedPhoneCol;
+    @FXML
+    private Button addApptDeleteButton;
 
     /**
      * Initializes the controller class.
@@ -175,6 +177,8 @@ public class AddAppointmentController implements Initializable {
                 associatedList.add(customer);
                 //Set customerId
                 customerId = customer.getId();
+                //Enable the Delete Button
+                addApptDeleteButton.setDisable(false);
             }
             else {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "A customer has already been added");
@@ -203,6 +207,8 @@ public class AddAppointmentController implements Initializable {
                 associatedList.remove(customer);
                 //Clear customerId
                 customerId = 0;
+                //Disable the Delete button
+                addApptDeleteButton.setDisable(true);
             } else {
                 alert.close();
             }

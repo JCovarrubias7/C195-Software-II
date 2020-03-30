@@ -207,12 +207,12 @@
                         <Pane prefHeight="47.0" prefWidth="343.0" />
                      </children>
                   </HBox>
-                  <TableView fx:id="addApptCustomerTableView" prefHeight="563.0" prefWidth="1063.0">
+                  <TableView fx:id="addApptCustomerTableView" prefHeight="563.0" prefWidth="78.0">
                     <columns>
                       <TableColumn fx:id="customersNameCol" prefWidth="278.0" text="Name" />
                       <TableColumn fx:id="customersCityCol" prefWidth="268.0" text="City" />
                         <TableColumn fx:id="customersCountryCol" prefWidth="247.0" text="Country" />
-                        <TableColumn fx:id="customersPhoneCol" prefWidth="269.0" text="Phone Number" />
+                        <TableColumn fx:id="customersPhoneCol" prefWidth="268.0" text="Phone Number" />
                     </columns>
                      <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -237,13 +237,13 @@
                         <TableColumn fx:id="associatedNameCol" prefWidth="278.0" text="Name" />
                         <TableColumn fx:id="associatedCityCol" prefWidth="268.0" text="City" />
                         <TableColumn fx:id="associatedCountryCol" prefWidth="247.0" text="Country" />
-                        <TableColumn fx:id="associatedPhoneCol" prefWidth="269.0" text="Phone Number" />
+                        <TableColumn fx:id="associatedPhoneCol" prefWidth="268.0" text="Phone Number" />
                      </columns>
                      <VBox.margin>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                      </VBox.margin>
                   </TableView>
-                  <Button minWidth="150.0" mnemonicParsing="false" onAction="#addApptDeleteAssociatedButton" text="Delete">
+                  <Button fx:id="addApptDeleteButton" disable="true" minWidth="150.0" mnemonicParsing="false" onAction="#addApptDeleteAssociatedButton" text="Delete">
                      <VBox.margin>
                         <Insets right="10.0" />
                      </VBox.margin>
