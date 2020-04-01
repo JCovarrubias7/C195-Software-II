@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Locale;
 import java.util.Optional;
 import javafx.collections.ObservableList;
@@ -788,6 +789,11 @@ public class DBManager {
             appResultSet.close();
             createStmt.close();
             conn.close();
+            
+            //Create comparator
+            Comparator<Appointment> appointmentComparator = Comparator.comparing(Appointment::getZdtStart);
+            //Compare the apppintments by their ZDT start time and sort it
+            appList.sort(appointmentComparator);
         } 
         catch (SQLException e) {
             System.out.println(e.getMessage());

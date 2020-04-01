@@ -27,6 +27,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -43,6 +44,8 @@ public class MainMenuController implements Initializable {
     Stage stage;
     Parent scene;
 
+    @FXML
+    private Label mainCalenderLabel;
     @FXML
     private TableView<Appointment> calendarTableView;
     @FXML
@@ -94,6 +97,9 @@ public class MainMenuController implements Initializable {
         calendarLocationCol.setCellValueFactory(new PropertyValueFactory<>("location"));
         calendarStartTimeCol.setCellValueFactory(new PropertyValueFactory<>("start"));
         calendarEndTimeCol.setCellValueFactory(new PropertyValueFactory<>("end"));
+        
+        //Set Calendar label to "Appointments - All"
+        mainCalenderLabel.setText("Appointments - All");
         
         //Set the table with the customerlist
         mainUpdateCustomerTableView();
@@ -224,10 +230,14 @@ public class MainMenuController implements Initializable {
     private void mainWeeklyView(ActionEvent event) {
         ObservableList<Appointment> weeklyList = FXCollections.observableArrayList();
         weeklyCalendarList(weeklyList);
-        //Crete comparator
+        //Create comparator
         Comparator<Appointment> appointmentComparator = Comparator.comparing(Appointment::getZdtStart);
+        //Compare the apppintments by their ZDT start time and sort it
         weeklyList.sort(appointmentComparator);
         
+        //Set the Calendar label to "Appointments - Weekly"
+        mainCalenderLabel.setText("Appointments - Weekly");
+        //Set the list on the Calendar Table View
         calendarTableView.setItems(weeklyList);
     }
 
@@ -235,11 +245,30 @@ public class MainMenuController implements Initializable {
     private void mainMonthlyView(ActionEvent event) {
         ObservableList<Appointment> monthlyList = FXCollections.observableArrayList();
         monthlyCalendarList(monthlyList);
-        //Crete comparator
+        //Create comparator
         Comparator<Appointment> appointmentComparator = Comparator.comparing(Appointment::getZdtStart);
+        //Compare the apppintments by their ZDT start time and sort it
         monthlyList.sort(appointmentComparator);
         
+        //Set the Calendar label to "Appointment - Monthly"
+        mainCalenderLabel.setText("Appointments - Monthly");
+        //Set the list on the Calendar Table View
         calendarTableView.setItems(monthlyList);
+    }
+    
+    @FXML
+    private void mainAllView(ActionEvent event) {
+        //Get all the appointments from the AppointmentList
+        ObservableList<Appointment> appList = AppointmentList.getAllAppointments();
+        //Create comparator
+        Comparator<Appointment> appointmentComparator = Comparator.comparing(Appointment::getZdtStart);
+        //Compare the apppintments by their ZDT start time and sort it
+        appList.sort(appointmentComparator);
+        
+        //Set the Calendar label to "Appointment - All"
+        mainCalenderLabel.setText("Appointments - All");
+        //Set the list on the Calendar Table View
+        calendarTableView.setItems(appList);
     }
     
     @FXML

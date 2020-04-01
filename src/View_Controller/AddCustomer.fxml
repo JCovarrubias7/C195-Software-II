@@ -70,27 +70,27 @@
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <TextField fx:id="addCustomerNameField" promptText="Customer Name" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <TextField fx:id="addCustomerNameField" promptText="Firstname Lastname" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <TextField fx:id="addCustomerAddressField" promptText="Customer Address" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <TextField fx:id="addCustomerAddressField" promptText="1234 W NameofStreet Ave" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <TextField fx:id="addCustomerAddress2Field" promptText="Address Continue" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <TextField fx:id="addCustomerAddress2Field" promptText="APT 2" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <TextField fx:id="addCustomerPhoneField" promptText="Customer Phone Number" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                  <TextField fx:id="addCustomerPhoneField" promptText="5551235555" GridPane.columnIndex="1" GridPane.rowIndex="4">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>
                   </TextField>
-                  <TextField fx:id="addCustomerCityField" promptText="City" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                  <TextField fx:id="addCustomerCityField" promptText="CityName" GridPane.columnIndex="1" GridPane.rowIndex="5">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>
@@ -105,13 +105,13 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <TextField fx:id="addCustomerPostalCodeField" promptText="Zip Code" />
+                        <TextField fx:id="addCustomerPostalCodeField" promptText="#####" />
                         <Label text="Country" GridPane.columnIndex="1" GridPane.halignment="RIGHT">
                            <GridPane.margin>
                               <Insets right="5.0" />
                            </GridPane.margin>
                         </Label>
-                        <TextField fx:id="addCustomerCountryField" promptText="Country" GridPane.columnIndex="2">
+                        <TextField fx:id="addCustomerCountryField" promptText="CountryName" GridPane.columnIndex="2">
                            <GridPane.margin>
                               <Insets right="5.0" />
                            </GridPane.margin>

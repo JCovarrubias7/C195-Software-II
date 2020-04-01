@@ -1,5 +1,6 @@
 package View_Controller;
 
+import Model.Customer;
 import static Model.DBManager.addNewCustomerChecks;
 import java.io.IOException;
 import java.net.URL;
@@ -15,6 +16,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 /**
@@ -64,7 +66,18 @@ public class AddCustomerController implements Initializable {
         String postalCode = addCustomerPostalCodeField.getText();
         String country = addCustomerCountryField.getText();
         
-        //TODO Add validation
+        //Customer input validation
+        String validationMessage = Customer.customerValidation(name, address, address2, phone, city, postalCode, country); 
+        
+        //Create an Alert if customerValidation returns a string
+        if (validationMessage.length() > 0) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("ERROR ADDING CUSTOMER");
+            alert.setContentText(validationMessage);
+            alert.getDialogPane().setMaxWidth(850);
+            alert.showAndWait();
+            return;
+        }
         
         addNewCustomerChecks(name, address, address2, phone, city, postalCode, country);
         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
