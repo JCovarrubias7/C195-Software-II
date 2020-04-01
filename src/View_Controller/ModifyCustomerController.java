@@ -77,6 +77,19 @@ public class ModifyCustomerController implements Initializable {
         String postalCode = modCustomerPostalCodeField.getText();
         String country = modCustomerCountryField.getText();
         
+        //Customer input validation
+        String validationMessage = Customer.customerValidation(name, address, address2, phone, city, postalCode, country); 
+        
+        //Create an Alert if customerValidation returns a string
+        if (validationMessage.length() > 0) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("ERROR ADDING CUSTOMER");
+            alert.setContentText(validationMessage);
+            alert.getDialogPane().setMaxWidth(850);
+            alert.showAndWait();
+            return;
+        }
+        
         modifyCustomerChecks(id, name, address, address2, phone, city, postalCode, country);
         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
