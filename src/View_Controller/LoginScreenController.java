@@ -1,5 +1,6 @@
 package View_Controller;
 
+import static Model.DBManager.appointmentWithin15Minutes;
 import static Model.DBManager.checkCredentials;
 import java.io.IOException;
 import java.net.URL;
@@ -88,6 +89,9 @@ public class LoginScreenController implements Initializable {
                 stage.setScene(new Scene(scene));
                 stage.setTitle("Appointment System - Main Menu");
                 stage.show();
+                
+                //Check to see if there is an appointment in the next 15 minutes
+                appointmentWithin15Minutes();
             }
             else {
                 Alert alert = new Alert(Alert.AlertType.WARNING, incorrectCredentialsLabel);

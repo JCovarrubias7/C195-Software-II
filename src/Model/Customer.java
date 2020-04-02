@@ -150,7 +150,7 @@ public class Customer {
         else if (name.length() > 45) {
             validationMessage += "NAME: name is too long. Please alter customer name. \n";
         }
-        else if (!name.matches("[a-zA-Z\\s]+")) {
+        else if (!name.matches("[a-zA-Z\\s-_']+")) {
             validationMessage += "NAME: numbers or special characters are not allowed. Please use letters. \n";    
         }
         
@@ -160,14 +160,14 @@ public class Customer {
         else if (address.length() > 50 ) {
             validationMessage += "ADDRESS: address is too long. Please alter the address. \n";
         }
-        else if (!address.matches("[\\w\\s]+")) {
+        else if (!address.matches("[\\w\\s.]+")) {
             validationMessage += "ADDRESS: special characters, including periods, are not allowed. Please use letters and numbers only. \n";    
         }
         
         if (address2.length() > 50 ) {
             validationMessage += "ADDRESS 2: address is too long. Please alter the address. \n";
         }
-        if (!address2.isEmpty() && !address2.matches("[\\w\\s]+")) {
+        if (!address2.isEmpty() && !address2.matches("[\\w\\s.]+")) {
             validationMessage += "ADDRESS 2: special characters, including periods, are not allowed. Please use letters and numbers only. \n";    
         }
         
@@ -182,14 +182,11 @@ public class Customer {
                 int phoneNumber = Integer.parseInt(phone);
             }
             catch (NumberFormatException e) {
-                if(!phone.matches("[\\d]+")) {
+                if(!phone.matches("[\\d\\s-]+")) {
                     validationMessage += "PHONE: letters or special characters are not allowed. Please use numbers only. \n";
                 }
             }
         }
-//        if (!phone.matches("[\\d]+")) {
-//            validationMessage += "The Phone field should not have letters or special characters. Please use numbers only. \n";    
-//        }
 
         if (city.length() == 0 ) {
             validationMessage += "CITY: the field is empty. Please input a city name. \n";
@@ -197,7 +194,7 @@ public class Customer {
         else if (city.length() > 50 ) {
             validationMessage += "CITY: city name is too long. Please alter the city name. \n";
         }
-        else if (!city.matches("[a-zA-Z\\s]+")) {
+        else if (!city.matches("[a-zA-Z\\s-_']+")) {
             validationMessage += "CITY: numbers or special characters are not allowed. Please use letters only. \n";    
         }
         
@@ -212,7 +209,7 @@ public class Customer {
                 int postalCodeNumber = Integer.parseInt(postalCode);
             }
             catch (NumberFormatException e) {
-                if(!postalCode.matches("[\\d]+")) {
+                if(!postalCode.matches("[\\d-]+")) {
                     validationMessage += "POSTAL CODE: letters or special characters are not allowed. Please use numbers only. \n";
                 }
             }
@@ -224,7 +221,7 @@ public class Customer {
         else if (country.length() > 50 ) {
             validationMessage += "COUNTRY: the country name is too long. Please alter the country name. \n";
         }
-        else if (!country.matches("[a-zA-Z\\s]+")) {
+        else if (!country.matches("[a-zA-Z\\s-_']+")) {
             validationMessage += "COUNTRY: numbers or special characters are not allowed. Please use letters only. \n";    
         }
         return validationMessage;

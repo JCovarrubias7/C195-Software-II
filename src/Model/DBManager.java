@@ -1,6 +1,7 @@
 package Model;
 
 import java.sql.*;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -705,6 +706,7 @@ public class DBManager {
         ObservableList<Appointment> appList = AppointmentList.getAllAppointments();
         //Make sure it is empty since we are going to populate the list from the DB
         appList.clear();
+        //Select appointments to display that end time is after current time
         String query = "SELECT appointmentId FROM appointment WHERE start > CURRENT_DATE";
         ArrayList<Integer> appIdsList = new ArrayList<>();
         createStatement();
@@ -874,5 +876,36 @@ public class DBManager {
         return weeklyList;
     }
     
+    public static void appointmentWithin15Minutes() {
+        //Get all the appointments from the AppointmentList
+        ObservableList<Appointment> appList = AppointmentList.getAllAppointments();
+        
+        //Check each appointment to see if it starts in the next fifteen minutes
+        for (Appointment appointment : appList) {
+            //Get appointment information
+            String contactName = appointment.getContact();
+            String location = appointment.getLocation();
+            //Get date and time information
+            Instant instant = Instant.now();
+            ZonedDateTime localZDT = instant.atZone(ZoneId.systemDefault());
+            ZonedDateTime apptZDT = appointment.getZdtStart();
+            Duration duration = Duration.between(localZDT, apptZDT);
+            long minutesBetweenTimes = duration.toMinutes() + 1;
+            if (minutesBetweenTimes == 1) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("No Appointments");
+                alert.setContentText(currentUser + " has an appointment with " + contactName + " in " + location + 
+                        " that is starting now or in the next minute.");
+                alert.showAndWait();
+            }
+            if(minutesBetweenTimes >= 2 && minutesBetweenTimes <= 15) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("No Appointments");
+                alert.setContentText(currentUser + " has an appointment with " + contactName + " in " + minutesBetweenTimes + 
+                        " minutes in " + location + ".");
+                alert.showAndWait();
+            }
+        }
+    }
 
 }
