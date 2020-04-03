@@ -13,7 +13,7 @@ import static Model.DBManager.updateCustomerList;
 import static Model.DBManager.weeklyCalendarList;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
@@ -230,10 +230,10 @@ public class MainMenuController implements Initializable {
     private void mainWeeklyView(ActionEvent event) {
         ObservableList<Appointment> weeklyList = FXCollections.observableArrayList();
         weeklyCalendarList(weeklyList);
-        //Create comparator
-        Comparator<Appointment> appointmentComparator = Comparator.comparing(Appointment::getZdtStart);
-        //Compare the apppintments by their ZDT start time and sort it
-        weeklyList.sort(appointmentComparator);
+
+        //Compare and sort the list of appointments
+        Collections.sort(weeklyList, (appt1, appt2) ->  //Comparator Lamba is being passed in as the second parameter. We don't have to define the type in the arguement list because the lamba will infer it from the list itself. 
+                appt1.getZdtStart().compareTo(appt2.getZdtStart()));    // There is no need to define the comparator first and then apply it to the list
         
         //Set the Calendar label to "Appointments - Weekly"
         mainCalenderLabel.setText("Appointments - Weekly");
@@ -245,11 +245,11 @@ public class MainMenuController implements Initializable {
     private void mainMonthlyView(ActionEvent event) {
         ObservableList<Appointment> monthlyList = FXCollections.observableArrayList();
         monthlyCalendarList(monthlyList);
-        //Create comparator
-        Comparator<Appointment> appointmentComparator = Comparator.comparing(Appointment::getZdtStart);
-        //Compare the apppintments by their ZDT start time and sort it
-        monthlyList.sort(appointmentComparator);
         
+        //Compare and sort the list of appointments
+        Collections.sort(monthlyList, (appt1, appt2) ->  //Comparator Lamba is being passed in as the second parameter. We don't have to define the type in the arguement list because the lamba will infer it from the list itself. 
+                appt1.getZdtStart().compareTo(appt2.getZdtStart()));    // There is no need to define the comparator first and then apply it to the list
+       
         //Set the Calendar label to "Appointment - Monthly"
         mainCalenderLabel.setText("Appointments - Monthly");
         //Set the list on the Calendar Table View
@@ -260,10 +260,10 @@ public class MainMenuController implements Initializable {
     private void mainAllView(ActionEvent event) {
         //Get all the appointments from the AppointmentList
         ObservableList<Appointment> appList = AppointmentList.getAllAppointments();
-        //Create comparator
-        Comparator<Appointment> appointmentComparator = Comparator.comparing(Appointment::getZdtStart);
-        //Compare the apppintments by their ZDT start time and sort it
-        appList.sort(appointmentComparator);
+        
+        //Compare and sort the list of appointments
+        Collections.sort(appList, (appt1, appt2) ->  //Comparator Lamba is being passed in as the second parameter. We don't have to define the type in the arguement list because the lamba will infer it from the list itself. 
+                appt1.getZdtStart().compareTo(appt2.getZdtStart()));    // There is no need to define the comparator first and then apply it to the list
         
         //Set the Calendar label to "Appointment - All"
         mainCalenderLabel.setText("Appointments - All");
@@ -276,14 +276,14 @@ public class MainMenuController implements Initializable {
         //Create the dialog box on exit
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to Exit? Press OK to exit");
         alert.setTitle("Exit Application");
-        Optional<ButtonType> result = alert.showAndWait();
-        if(result.isPresent() && result.get() == ButtonType.OK) {
-            closeConnection();
-            System.exit(0);
-        }
-        else {
-            alert.close();
-        }
+        alert.showAndWait().ifPresent((response -> {  //Quick response lambda
+            if (response == ButtonType.OK) {
+                closeConnection();
+                System.exit(0);
+            } else {
+                alert.close();
+            }
+        }));
     }
-    
+
 }

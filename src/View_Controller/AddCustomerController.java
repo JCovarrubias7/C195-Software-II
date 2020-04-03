@@ -88,21 +88,25 @@ public class AddCustomerController implements Initializable {
     }
 
     @FXML
-    private void addCustomerOnActionCancelBtn(ActionEvent event) throws IOException {
+    private void addCustomerOnActionCancelBtn(ActionEvent event) {
          //Create the dialog box on exit
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel adding a customer? Press OK to exit");
         alert.setTitle("Exit to Main Screen");
-        Optional<ButtonType> result = alert.showAndWait();
-        if(result.isPresent() && result.get() == ButtonType.OK) {
-            stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-            scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
-            stage.setScene(new Scene(scene));
-            stage.setTitle("Appointment System - Main Menu");
-            stage.show();
-        }
-        else {
-            alert.close();
-        }
+        alert.showAndWait().ifPresent((response -> {  //Quick response lambda
+            if (response == ButtonType.OK) {
+                try {
+                    stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
+                    scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
+                    stage.setScene(new Scene(scene));
+                    stage.setTitle("Appointment System - Main Menu");
+                    stage.show();
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
+                }
+            } 
+            else {
+                alert.close();
+            }
+        }));
     }
-    
 }

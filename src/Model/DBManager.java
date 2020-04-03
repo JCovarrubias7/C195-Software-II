@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.Locale;
 import java.util.Optional;
 import javafx.collections.ObservableList;
@@ -416,17 +416,22 @@ public class DBManager {
         try {
             prepStmt.setString(1, name);
             prepStmt.setInt(2, addressId);
-            
+
             //Create a confirmation dialog box to confirm setting customer to active
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "The customer exist in the Database but set \"inactive\". Do you want to set the customer to \"active\"?");
             alert.setTitle("Activate Customer");
-            Optional<ButtonType> result = alert.showAndWait();
-            //Set the cutomer to active if Ok button is clicked
-            if (result.get() == ButtonType.OK) {
-                prepStmt.executeUpdate();
-            }
-        }
-        catch (SQLException e) {
+            alert.showAndWait().ifPresent((response -> {  //Quick response lambda
+                if (response == ButtonType.OK) {
+                    try {
+                        createStmt.executeUpdate(query);
+                    } catch (SQLException e) {
+                        System.out.println(e.getMessage());
+                    }
+                } else {
+                    alert.close();
+                }
+            }));
+        } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
@@ -613,7 +618,7 @@ public class DBManager {
         //Create a confirmation dialog box to confirm deletion/inactive
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete/set inactive customer " + customerName + "? Press OK to delete");
         alert.setTitle("Confirm deletion/incative");
-        alert.showAndWait().ifPresent((response -> {  //quick lambda
+        alert.showAndWait().ifPresent((response -> {  //Quick response lambda
             if (response == ButtonType.OK) {
                 try {
                     createStmt.executeUpdate(query);
@@ -793,9 +798,13 @@ public class DBManager {
             conn.close();
             
             //Create comparator
-            Comparator<Appointment> appointmentComparator = Comparator.comparing(Appointment::getZdtStart);
+            //Comparator<Appointment> appointmentComparator = Comparator.comparing(Appointment::getZdtStart);
             //Compare the apppintments by their ZDT start time and sort it
-            appList.sort(appointmentComparator);
+            //appList.sort(appointmentComparator);
+            
+            //Compare and sort the list of appointments
+            Collections.sort(appList, (appt1, appt2) ->  //Comparator Lamba is being passed in as the second parameter. We don't have to define the type in the arguement list because the lamba will infer it from the list itself. 
+                    appt1.getZdtStart().compareTo(appt2.getZdtStart()));    // There is no need to define the comparator first and then apply it to the list
         } 
         catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -810,7 +819,7 @@ public class DBManager {
         //Create a confirmation dialog box to confirm deletion of appointment
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete Appointment? Press OK to delete");
         alert.setTitle("Confirm Delete");
-        alert.showAndWait().ifPresent((response -> {  //quick lambda
+        alert.showAndWait().ifPresent((response -> {  //Quick response lambda
             if (response == ButtonType.OK) {
                 try {
                     createStmt.executeUpdate(query);
@@ -838,14 +847,15 @@ public class DBManager {
         //Get the time at this moment.
         Instant instant = Instant.now();
         int instantMonth = instant.atZone(ZoneId.systemDefault()).getMonthValue();
-        for (Appointment appointment : appList) {
+        //for (Appointment appointment : appList) {
+        appList.forEach(appointment -> { //a simple iteration lambda
             if(appointment.getZdtStart().getMonthValue() == instantMonth) {
                 System.out.println(appointment.getZdtStart().getMonthValue());
                 System.out.println(instant.atZone(ZoneId.systemDefault()).getMonthValue());
                 System.out.println(instantMonth);
                 monthlyList.add(appointment);
             }
-        }
+        });
         return monthlyList;
     }
     
@@ -864,7 +874,7 @@ public class DBManager {
         ZonedDateTime zdt = instant.atZone(ZoneId.systemDefault());
         TemporalField weekField = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
         int weekOfYear = zdt.get(weekField);
-        for (Appointment appointment : appList) {
+        appList.forEach(appointment -> { //a simple iteration lambda
             ZonedDateTime appointmentZDT = appointment.getZdtStart();
             int appointmentWeek = appointmentZDT.get(weekField);
             if(appointmentWeek == weekOfYear) {
@@ -872,7 +882,7 @@ public class DBManager {
                 System.out.println("week of APPT  " + appointmentWeek);
                 weeklyList.add(appointment);
             }
-        }
+        });
         return weeklyList;
     }
     

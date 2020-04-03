@@ -102,19 +102,20 @@ public class ModifyCustomerController implements Initializable {
     private void modCustomerOnActionCancelBtn(ActionEvent event) {
         //Create a confirmation dialog box to confirm cancelation of modifying customer
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel modifying customer? Press OK to cancel.");
-        alert.setTitle("Confirm Modification");
-        alert.showAndWait().ifPresent((response -> {  //quick lambda
+        alert.setTitle("Confirm Modification Cancelation");
+        alert.showAndWait().ifPresent((response -> {  //Quick response lambda
             if (response == ButtonType.OK) {
-                stage = (Stage)((Button)event.getSource()).getScene().getWindow();
                 try {
+                    stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                     scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
-                } catch (IOException ex) {
-                    Logger.getLogger(ModifyCustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                    stage.setScene(new Scene(scene));
+                    stage.setTitle("Appointment System - Main Menu");
+                    stage.show();
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
                 }
-                stage.setScene(new Scene(scene));
-                stage.setTitle("Appointment System - Main Menu");
-                stage.show();
-            } else {
+            } 
+            else {
                 alert.close();
             }
         }));

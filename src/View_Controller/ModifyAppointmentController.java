@@ -155,13 +155,13 @@ public class ModifyAppointmentController implements Initializable {
         customerId = appointment.getCustomerId();
         //Create the list to populate to retrieve the customerName from
         ObservableList<Customer> customerList = CustomerList.getAllCustomers();
-        for (Customer customer : customerList) {
+        customerList.forEach(customer -> {  //a simple iteration lambda
             if (customer.getId() == customerId) {
                 associatedList.add(customer);
                 //Set the Delete Button to be enabled
                 modApptDeleteButton.setDisable(false);
             }
-        }
+        });
         
         //Set appintmentId
         appointmentId = appointment.getAppId();
@@ -341,18 +341,19 @@ public class ModifyAppointmentController implements Initializable {
         //Create a confirmation dialog box to confirm cancelation of modifying an appointment
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to cancel modifying an appointment? Press OK to cancel.");
         alert.setTitle("Confirm Cancelation");
-        alert.showAndWait().ifPresent((response -> {  //quick lambda
+        alert.showAndWait().ifPresent((response -> {  //Quick response lambda
             if (response == ButtonType.OK) {
-                stage = (Stage)((Button)event.getSource()).getScene().getWindow();
                 try {
+                    stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
                     scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
-                } catch (IOException ex) {
-                    Logger.getLogger(ModifyCustomerController.class.getName()).log(Level.SEVERE, null, ex);
+                    stage.setScene(new Scene(scene));
+                    stage.setTitle("Appointment System - Main Menu");
+                    stage.show();
+                } catch (IOException e) {
+                    System.out.println(e.getMessage());
                 }
-                stage.setScene(new Scene(scene));
-                stage.setTitle("Appointment System - Main Menu");
-                stage.show();
-            } else {
+            } 
+            else {
                 alert.close();
             }
         }));
