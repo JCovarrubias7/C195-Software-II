@@ -44,6 +44,10 @@ public class ReportsScreenController implements Initializable {
         catch (IOException ex) {
             ex.getMessage();
         }
+        //Create a dialog box to inform of a sucessful report run
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Report 1 ran succesfully.");
+        alert.setTitle("Report Successfully Created");
+        alert.showAndWait();
     }
 
     @FXML
@@ -54,6 +58,10 @@ public class ReportsScreenController implements Initializable {
         catch (IOException ex) {
             ex.getMessage();
         }
+        //Create a dialog box to inform of a sucessful report run
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Report 2 ran succesfully.");
+        alert.setTitle("Report Successfully Created");
+        alert.showAndWait();
     }
 
     @FXML
@@ -64,6 +72,10 @@ public class ReportsScreenController implements Initializable {
         catch (IOException ex) {
             ex.getMessage();
         }
+        //Create a dialog box to inform of a sucessful report run
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Report 3 ran succesfully.");
+        alert.setTitle("Report Successfully Created");
+        alert.showAndWait();
     }
 
     @FXML
