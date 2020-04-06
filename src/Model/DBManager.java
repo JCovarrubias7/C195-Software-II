@@ -939,11 +939,9 @@ public class DBManager {
         String query = "SELECT type, start FROM appointment ORDER BY start ";
         ArrayList<Integer> appointmentIdList = new ArrayList<>();
         createStatement();
-        String message = "*** This report displays the number of appointment types by month ***\n";
         Map<String, Map<String, Integer>> valueMap = new LinkedHashMap<>();
         try {
             ResultSet appointmentSet = createStmt.executeQuery(query);
-            //appointmentSet.next();
             while (appointmentSet.next()) {
                 //Get type
                 String type = appointmentSet.getString("type");
@@ -975,6 +973,9 @@ public class DBManager {
                     valueMap.get(yearDate).put(type, 1);
                 }  
             }
+            appointmentSet.close();
+            createStmt.close();
+            conn.close();
             
             //Create the file in the report directory found in the project directory
             Path path = Paths.get("Reports/ApptTypesByMonth.txt");
@@ -994,12 +995,108 @@ public class DBManager {
             });
             sb.append(System.lineSeparator());
             
-            //Write to actual file, create if doesn't exist, appen if exist
+            //Write to actual file, create if doesn't exist, append if exist
             Files.write(path, sb.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+        
     } 
+    
+    public static void runReport2() throws IOException {
+        String query = "SELECT user.userId, user.userName, appointment.userId, appointment.contact, appointment.type, appointment.start\n" +
+                "FROM user INNER JOIN appointment\n" +
+                "ON user.userId = appointment.userId\n" +
+                "WHERE NOW() < start";
+        //Create the file in the report directory found in the project directory
+        Path path = Paths.get("Reports/UserSchedule.txt");
+        if(Files.deleteIfExists(path)) {
+        }
+        Files.createDirectories(path.getParent());
+        
+        createStatement();
+        try {
+            ResultSet apptByUserSet = createStmt.executeQuery(query);
+            while(apptByUserSet.next()) {
+                //Set variables with the data from the DB
+                String user = apptByUserSet.getString("userName");
+                String contact = apptByUserSet.getString("contact");
+                String tytpe = apptByUserSet.getString("type");
+                LocalDateTime start = apptByUserSet.getTimestamp("start").toLocalDateTime();
+                
+                //Set the format of the Date and Time Month day, year Time
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM dd, yyyy @ hh:mm a");
+                //Create an instant with the start time using UTC
+                Instant instant = start.toInstant(ZoneOffset.UTC);
+                //UTC IS a time zone, we just have to adjust to our time zone
+                //so this instant(the UTC) is zdt at this zone (systemDefault
+                ZonedDateTime zdtStart = instant.atZone(ZoneId.systemDefault());
+                //Create a string with the format set in the formatter
+                String stringStart = zdtStart.format(formatter);
+                
+                //Create a string to write to the file using stringbuilder
+                StringBuilder sb = new StringBuilder();
+                sb.append(user);
+                sb.append(" has an appointment with ");
+                sb.append(contact);
+                sb.append(" on ");
+                sb.append(stringStart);
+                sb.append(System.lineSeparator());
+                
+                //Write to actual file, create if doesn't exist, append if exist
+                Files.write(path, sb.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            }
+            apptByUserSet.close();
+            createStmt.close();
+            conn.close();
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    public static void runReport3() throws IOException {
+        String query = "SELECT appointment.customerId, customer.customerId, customer.customerName, COUNT(*) appointments  \n" +
+                "FROM appointment INNER JOIN customer  \n" +
+                "ON customer.customerId = appointment.customerId  \n" +
+                "GROUP BY appointment.customerId, customer.customerId  \n" +
+                "HAVING COUNT(*) > 0";
+        //Create the file in the report directory found in the project directory
+        Path path = Paths.get("Reports/CustomerTotalAppointments.txt");
+        if(Files.deleteIfExists(path)) {
+        }
+        Files.createDirectories(path.getParent());
+        
+        createStatement();
+        try {
+            ResultSet totalApptsSet = createStmt.executeQuery(query);
+            while(totalApptsSet.next()) {
+                //Set variables with the data from the DB
+                int customerId = totalApptsSet.getInt("customerId");
+                String customerName = totalApptsSet.getString("customerName");
+                int totalAppts = totalApptsSet.getInt("appointments");
+                
+                //Create a string to write to the file using stringbuilder
+                StringBuilder sb = new StringBuilder();
+                sb.append(customerName);
+                sb.append(" with customer ID=");
+                sb.append(customerId);
+                sb.append(" has had a total of  ");
+                sb.append(totalAppts);
+                sb.append(" appointments.");
+                sb.append(System.lineSeparator());
+                
+                //Write to actual file, create if doesn't exist, append if exist
+                Files.write(path, sb.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+            }
+            totalApptsSet.close();
+            createStmt.close();
+            conn.close();
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 }

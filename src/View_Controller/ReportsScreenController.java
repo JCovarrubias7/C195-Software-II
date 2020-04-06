@@ -1,6 +1,8 @@
 package View_Controller;
 
 import static Model.DBManager.runReport1;
+import static Model.DBManager.runReport2;
+import static Model.DBManager.runReport3;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -36,15 +38,32 @@ public class ReportsScreenController implements Initializable {
 
     @FXML
     private void reportOnActionButton1(ActionEvent event) {
-        runReport1();
+        try {
+            runReport1();
+        } 
+        catch (IOException ex) {
+            ex.getMessage();
+        }
     }
 
     @FXML
     private void reportOnActionButton2(ActionEvent event) {
+        try {
+            runReport2();
+        }
+        catch (IOException ex) {
+            ex.getMessage();
+        }
     }
 
     @FXML
     private void reportOnActionButton3(ActionEvent event) {
+        try {
+            runReport3();
+        }
+        catch (IOException ex) {
+            ex.getMessage();
+        }
     }
 
     @FXML
