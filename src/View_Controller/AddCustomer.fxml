@@ -65,7 +65,7 @@
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin></Label>
-                  <TextField fx:id="addCustomerIdField" disable="true" editable="false" promptText="Auto Generated Id - " GridPane.columnIndex="1">
+                  <TextField fx:id="addCustomerIdField" disable="true" editable="false" promptText="Auto Generated Id" GridPane.columnIndex="1">
                      <GridPane.margin>
                         <Insets right="5.0" />
                      </GridPane.margin>

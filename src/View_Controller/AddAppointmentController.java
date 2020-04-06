@@ -13,8 +13,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -165,7 +163,7 @@ public class AddAppointmentController implements Initializable {
     @FXML
     private void addApptAddCustomerButton(ActionEvent event) {
         Customer customer = addApptCustomerTableView.getSelectionModel().getSelectedItem();
-         //Create a dialog box warning if no custer was selected to associate with the product
+         //Create a dialog box warning if no customer was selected to associate with the appointment
         if (customer == null) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Please select a customer");
             alert.setTitle("Customer Not Selected");
@@ -212,9 +210,6 @@ public class AddAppointmentController implements Initializable {
             } else {
                 alert.close();
             }
-//            if (product.getAllAssociatedParts().isEmpty()) {
-//                addProductDeleteBtn.setDisable(true);
-//            }
         }
     }
     

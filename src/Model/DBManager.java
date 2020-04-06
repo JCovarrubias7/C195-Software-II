@@ -10,7 +10,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -18,19 +17,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -48,20 +39,20 @@ public class DBManager {
     private static Statement createStmt;
     
     //JDBC Url Parts
-    private static final String protocol = "jdbc";
-    private static final String vendorName = ":mysql:";
-    private static final String ipAddress = "//3.227.166.251/U05JnY";
+    private static final String PROTOCOL = "jdbc";
+    private static final String VENDORNAME = ":mysql:";
+    private static final String IP_ADDRESS = "//3.227.166.251/U05JnY";
     
     //JDBC Url
-    private static final String jdbcUrl = protocol + vendorName + ipAddress;
+    private static final String JDBCURL = PROTOCOL + VENDORNAME + IP_ADDRESS;
     
     //Driver and connection interface reference
-    private static final String mySQLJDBCDriver = "com.mysql.jdbc.Driver";
+    private static final String MYSQLJDBCDRIVER = "com.mysql.jdbc.Driver";
     private static Connection conn = null;
     
     //Username and password
-    private static final String DBusername = "U05JnY";
-    private static String DBpassword = "53688519034";
+    private static final String DB_USERNAME = "U05JnY";
+    private static final String DB_PASSWORD = "53688519034";
     
     public static void currentUser(String userName) {
         currentUser = userName;
@@ -70,14 +61,11 @@ public class DBManager {
     //Create connection method to the DB
     public static Connection startConnection() {
         try {
-            Class.forName(mySQLJDBCDriver);
-            conn = DriverManager.getConnection(jdbcUrl, DBusername, DBpassword);
+            Class.forName(MYSQLJDBCDRIVER);
+            conn = DriverManager.getConnection(JDBCURL, DB_USERNAME, DB_PASSWORD);
             System.out.println("Connection Succesful");
         }
-        catch(ClassNotFoundException e) {
-            System.out.println(e.getMessage());
-        }
-        catch(SQLException e) {
+        catch(ClassNotFoundException | SQLException e) {
             System.out.println(e.getMessage());
         }
         return conn;
@@ -227,7 +215,6 @@ public class DBManager {
             else {
                 addCustomer(name, addressId);
             }
-                
         }
         catch (SQLException e) {
             System.out.println(e.getMessage());
@@ -392,7 +379,6 @@ public class DBManager {
                 prepStmt.setInt(4, cityId);
                 prepStmt.setString(5, postalCode);
                 prepStmt.setString(6, phone);
-                //prepStmt.setString(7, state);
                 prepStmt.executeUpdate();
                 prepStmt.close();
                 conn.close();
@@ -448,6 +434,8 @@ public class DBManager {
                     alert.close();
                 }
             }));
+            prepStmt.close();
+            conn.close();
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -456,9 +444,8 @@ public class DBManager {
     private static void addCustomer(String name, int addressId) {
         String query = "SELECT customerId FROM customer ORDER BY customerId";
         int customerId;
-        startConnection();
+        createStatement();
         try {
-           Statement createStmt = conn.createStatement();
            ResultSet allCustomerIdsSet = createStmt.executeQuery(query);
            if (allCustomerIdsSet.last()) {
                customerId = allCustomerIdsSet.getInt("customerId");
@@ -492,9 +479,8 @@ public class DBManager {
         customerList.clear();
         String query = "SELECT customerId FROM customer WHERE active = 1";
         ArrayList<Integer> activeCustomerIdList = new ArrayList<>();
-        startConnection();
+        createStatement();
         try {
-            Statement createStmt= conn.createStatement();
             ResultSet activeCustomerSet = createStmt.executeQuery(query);
             while(activeCustomerSet.next()) {
                 activeCustomerIdList.add(activeCustomerSet.getInt("customerId"));
@@ -544,7 +530,6 @@ public class DBManager {
                 addressSet.close();
                 citySet.close();
                 countrySet.close();
-                
                 
                 //Create customer with constructor
                 Customer customer = new Customer(customerId, name, addressId, active, 
@@ -768,7 +753,6 @@ public class DBManager {
                 appResultSet = createStmt.executeQuery(query);
                 appResultSet.next();
                 String userName = appResultSet.getString("userName");
-                
                
                 //Set the dateTime for the start of the appointment
                 //Set the format of the Date and Time Month day, year Time
@@ -779,12 +763,7 @@ public class DBManager {
                 //so this instant(the UTC) is zdt at this zone (systemDefault
                 ZonedDateTime zdtStart = instant.atZone(ZoneId.systemDefault());
                 //Convert ZoneDateTime to string
-                
                 String stringStart = zdtStart.format(formatter);
-                System.out.println("start =" + start);
-                System.out.println("instant = " + instant);
-                System.out.println("zdt = " + zdtStart);
-                System.out.println("String of zdtldt = " + stringStart);
                 
                 //Get UTC time
                 Instant instantEnd = end.toInstant(ZoneOffset.UTC);
@@ -813,11 +792,6 @@ public class DBManager {
             appResultSet.close();
             createStmt.close();
             conn.close();
-            
-            //Create comparator
-            //Comparator<Appointment> appointmentComparator = Comparator.comparing(Appointment::getZdtStart);
-            //Compare the apppintments by their ZDT start time and sort it
-            //appList.sort(appointmentComparator);
             
             //Compare and sort the list of appointments
             Collections.sort(appList, (appt1, appt2) ->  //Comparator Lamba is being passed in as the second parameter. We don't have to define the type in the arguement list because the lamba will infer it from the list itself. 
@@ -867,9 +841,6 @@ public class DBManager {
         //for (Appointment appointment : appList) {
         appList.forEach(appointment -> { //a simple iteration lambda
             if(appointment.getZdtStart().getMonthValue() == instantMonth) {
-                System.out.println(appointment.getZdtStart().getMonthValue());
-                System.out.println(instant.atZone(ZoneId.systemDefault()).getMonthValue());
-                System.out.println(instantMonth);
                 monthlyList.add(appointment);
             }
         });
@@ -895,8 +866,6 @@ public class DBManager {
             ZonedDateTime appointmentZDT = appointment.getZdtStart();
             int appointmentWeek = appointmentZDT.get(weekField);
             if(appointmentWeek == weekOfYear) {
-                System.out.println("week of year  " + weekOfYear);
-                System.out.println("week of APPT  " + appointmentWeek);
                 weeklyList.add(appointment);
             }
         });
@@ -937,6 +906,13 @@ public class DBManager {
     
     public static void runReport1() throws IOException {
         String query = "SELECT type, start FROM appointment ORDER BY start ";
+        //Create the file in the report directory found in the project directory
+        Path path = Paths.get("Reports/ApptTypesByMonth.txt");
+        if(Files.deleteIfExists(path)) {
+        }
+        Files.createDirectories(path.getParent());
+        
+        //Create array list to hold appointIds
         ArrayList<Integer> appointmentIdList = new ArrayList<>();
         createStatement();
         Map<String, Map<String, Integer>> valueMap = new LinkedHashMap<>();
@@ -977,10 +953,6 @@ public class DBManager {
             createStmt.close();
             conn.close();
             
-            //Create the file in the report directory found in the project directory
-            Path path = Paths.get("Reports/ApptTypesByMonth.txt");
-            Files.createDirectories(path.getParent());
-            
             //Get timestamp
             String stringTimestamp = new Timestamp(System.currentTimeMillis()).toString();
             
@@ -1001,7 +973,6 @@ public class DBManager {
         catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-        
     } 
     
     public static void runReport2() throws IOException {

@@ -14,7 +14,6 @@ import static Model.DBManager.weeklyCalendarList;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -80,8 +79,7 @@ public class MainMenuController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        // appointment withing 15 minutes of loggin in
+        //appointment withing 15 minutes of loggin in
         //Set the colums to go get the specific info from the customer object
         customerNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         customerAddressCol.setCellValueFactory(new PropertyValueFactory<>("address"));
@@ -146,7 +144,7 @@ public class MainMenuController implements Initializable {
             MAController.sendAppt(selectedAppt);
 
             stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            Parent scene = loader.getRoot();
+            scene = loader.getRoot();
             stage.setScene(new Scene(scene));
             stage.setTitle("Appointment System - Modify Appointment");
             stage.show();
@@ -172,7 +170,7 @@ public class MainMenuController implements Initializable {
 
     @FXML
     private void mainReports(ActionEvent event) throws IOException {
-        //Open the AddCustomer scene on button press
+        //Open the Reports scene on button press
         stage = (Stage)((Button)event.getSource()).getScene().getWindow();
         scene = FXMLLoader.load(getClass().getResource("/View_Controller/ReportsScreen.fxml"));
         stage.setScene(new Scene(scene));
@@ -209,7 +207,7 @@ public class MainMenuController implements Initializable {
             MCController.sendCustomer(selectedCustomer);
 
             stage = (Stage) ((Button) event.getSource()).getScene().getWindow();
-            Parent scene = loader.getRoot();
+            scene = loader.getRoot();
             stage.setScene(new Scene(scene));
             stage.setTitle("Appointment System - Modify Customer");
             stage.show();

@@ -4,7 +4,6 @@ import Model.Customer;
 import static Model.DBManager.addNewCustomerChecks;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,7 +15,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 /**
@@ -74,6 +72,7 @@ public class AddCustomerController implements Initializable {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("ERROR ADDING CUSTOMER");
             alert.setContentText(validationMessage);
+            alert.getDialogPane().setMinWidth(650);
             alert.getDialogPane().setMaxWidth(850);
             alert.showAndWait();
             return;

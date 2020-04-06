@@ -33,7 +33,7 @@ import javafx.stage.Stage;
 public class LoginScreenController implements Initializable {
     
     //Set the logger
-    Logger log = Logger.getLogger("loginlog.txt");
+    static final Logger LOG = Logger.getLogger("loginlog.txt");
     
     //Declare Fields
     Stage stage;
@@ -72,10 +72,10 @@ public class LoginScreenController implements Initializable {
         FileHandler fh = new FileHandler("loginlog.txt", true); //if true, fileHandler will append to file
         SimpleFormatter sf = new SimpleFormatter();
         fh.setFormatter(sf);
-        log.addHandler(fh);
+        LOG.addHandler(fh);
         }
         catch (IOException | SecurityException ex) {
-            Logger.getLogger(LoginScreenController.class.getName()).log(Level.SEVERE, null, ex);
+            ex.getMessage();
         }
         
         //Set language based on systemDefault
@@ -103,7 +103,7 @@ public class LoginScreenController implements Initializable {
         else {
             if(checkCredentials(userName, userPassword) == true) {
                 //Write to log a successful log in
-                log.log(Level.INFO, userName + " succesfully logged in.");
+                LOG.log(Level.INFO, "{0} succesfully logged in.", userName);
                 
                 //Get Main Menu scene
                 stage = (Stage)((Button)event.getSource()).getScene().getWindow();

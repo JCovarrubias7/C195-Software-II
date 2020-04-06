@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package View_Controller;
 
 import Model.Appointment;
@@ -21,8 +16,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -47,7 +40,7 @@ import javafx.stage.Stage;
 /**
  * FXML Controller class
  *
- * @author Se7en
+ * @author Jorge Covarrubias
  */
 public class ModifyAppointmentController implements Initializable {
     
@@ -142,7 +135,7 @@ public class ModifyAppointmentController implements Initializable {
         modApptStartMinuteCB.setValue(String.valueOf(minutesFormatter.format(startLocalDateTime)));
         modApptStartAMPMChoice.setValue(AmPmFormatter.format(startLocalDateTime));
         
-        //Set the start time instant from the UTC ZoneDateTime in the appointment
+        //Set the end time instant from the UTC ZoneDateTime in the appointment
         Instant endInstant = appointment.getZdtEnd().toInstant();
         //Convert the UTC date to local time and get the Date
         LocalDateTime endLocalDateTime = LocalDateTime.ofInstant(endInstant, ZoneId.systemDefault());
@@ -162,7 +155,6 @@ public class ModifyAppointmentController implements Initializable {
                 modApptDeleteButton.setDisable(false);
             }
         });
-        
         //Set appintmentId
         appointmentId = appointment.getAppId();
     }
@@ -277,9 +269,6 @@ public class ModifyAppointmentController implements Initializable {
             } else {
                 alert.close();
             }
-//            if (product.getAllAssociatedParts().isEmpty()) {
-//                addProductDeleteBtn.setDisable(true);
-//            }
         }
     }
 
