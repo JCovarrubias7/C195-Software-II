@@ -1,9 +1,16 @@
 package Model;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.sql.*;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.Month;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -11,9 +18,19 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -87,7 +104,7 @@ public class DBManager {
         catch(SQLException e) {
             System.out.println(e.getMessage());
         }
-        return prepStmt;
+        return createStmt;
     }
     
     //Close the connection to the DB
@@ -423,7 +440,7 @@ public class DBManager {
             alert.showAndWait().ifPresent((response -> {  //Quick response lambda
                 if (response == ButtonType.OK) {
                     try {
-                        createStmt.executeUpdate(query);
+                        prepStmt.executeUpdate(query);
                     } catch (SQLException e) {
                         System.out.println(e.getMessage());
                     }
@@ -917,5 +934,72 @@ public class DBManager {
             }
         }
     }
+    
+    public static void runReport1() throws IOException {
+        String query = "SELECT type, start FROM appointment ORDER BY start ";
+        ArrayList<Integer> appointmentIdList = new ArrayList<>();
+        createStatement();
+        String message = "*** This report displays the number of appointment types by month ***\n";
+        Map<String, Map<String, Integer>> valueMap = new LinkedHashMap<>();
+        try {
+            ResultSet appointmentSet = createStmt.executeQuery(query);
+            //appointmentSet.next();
+            while (appointmentSet.next()) {
+                //Get type
+                String type = appointmentSet.getString("type");
+                LocalDateTime start = appointmentSet.getTimestamp("start").toLocalDateTime();
+                Instant instant = start.toInstant(ZoneOffset.UTC);
+                //UTC IS a time zone, we just have to adjust to our time zone
+                //so this instant(the UTC) is zdt at this zone (systemDefault
+                ZonedDateTime zdtStart = instant.atZone(ZoneId.systemDefault());
+                //Get year and month
+                int year = zdtStart.getYear();
+                Month month = zdtStart.getMonth();
+                
+                //Combine year and month
+                String yearDate = String.valueOf(year) + " " + String.valueOf(month);
+                
+                //If the key doesn't exist in the valuemap, it will create
+                // an entry with the value being another hashmap that takes a string and int
+                valueMap.computeIfAbsent(yearDate, k -> new HashMap<>());
+                
+                //If the key contains the type, get the value of the type and add 1
+                //then put the type and counteror into that key
+                if (valueMap.get(yearDate).containsKey(type)) {
+                     int counter = valueMap.get(yearDate).get(type) + 1;
+                     valueMap.get(yearDate).put(type, counter);
+                }
+                //if the key doesn't containt the type, add it to the valueMap with 
+                //an initial value of 1.
+                else {
+                    valueMap.get(yearDate).put(type, 1);
+                }  
+            }
+            
+            //Create the file in the report directory found in the project directory
+            Path path = Paths.get("Reports/ApptTypesByMonth.txt");
+            Files.createDirectories(path.getParent());
+            
+            //Get timestamp
+            String stringTimestamp = new Timestamp(System.currentTimeMillis()).toString();
+            
+            //Create string to write to file using stringbuilder
+            StringBuilder sb = new StringBuilder();
+            sb.append(stringTimestamp);
+            sb.append(System.lineSeparator());
+            valueMap.forEach((k, v) -> {    //Lambda to iterate though each key value pair 
+                String keyValue = k + " - " + v;
+                sb.append(keyValue);
+                sb.append(System.lineSeparator());
+            });
+            sb.append(System.lineSeparator());
+            
+            //Write to actual file, create if doesn't exist, appen if exist
+            Files.write(path, sb.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    } 
 
 }

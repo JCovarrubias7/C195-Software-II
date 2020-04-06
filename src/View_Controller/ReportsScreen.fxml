@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="View_Controller.ReportsScreenController">
+   <children>
+      <Label alignment="CENTER" layoutX="263.0" layoutY="38.0" text="Reports">
+         <font>
+            <Font size="22.0" />
+         </font>
+      </Label>
+      <VBox alignment="CENTER" layoutX="10.0" layoutY="70.0" prefHeight="475.0" prefWidth="580.0">
+         <children>
+            <Label text="Report # 1" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Run this report to get the number of appointment types by month." />
+            <Button mnemonicParsing="false" onAction="#reportOnActionButton1" text="Run Report # 1" />
+            <Pane prefHeight="36.0" prefWidth="580.0" />
+            <Label text="Report # 2" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Run this report to see the schedule of each consultant." />
+            <Button mnemonicParsing="false" onAction="#reportOnActionButton2" text="Run Report # 2" />
+            <Pane prefHeight="36.0" prefWidth="580.0" />
+            <Label text="Report # 3" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Run this report to get the total appointments by customer." />
+            <Button mnemonicParsing="false" onAction="#reportOnActionButton3" text="Run Report # 3" />
+            <Pane prefHeight="36.0" prefWidth="580.0" />
+            <Button minWidth="100.0" mnemonicParsing="false" onAction="#reportOnActionExit" text="Return to Main Menu" />
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

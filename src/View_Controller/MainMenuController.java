@@ -171,7 +171,13 @@ public class MainMenuController implements Initializable {
     }
 
     @FXML
-    private void mainReports(ActionEvent event) {
+    private void mainReports(ActionEvent event) throws IOException {
+        //Open the AddCustomer scene on button press
+        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+        scene = FXMLLoader.load(getClass().getResource("/View_Controller/ReportsScreen.fxml"));
+        stage.setScene(new Scene(scene));
+        stage.setTitle("Appointment System - Reports");
+        stage.show();
     }
 
     @FXML
