@@ -1037,7 +1037,7 @@ public class DBManager {
                 sb.append(customerName);
                 sb.append(" with customer ID=");
                 sb.append(customerId);
-                sb.append(" has had a total of  ");
+                sb.append(" has had a total of ");
                 sb.append(totalAppts);
                 sb.append(" appointments.");
                 sb.append(System.lineSeparator());
