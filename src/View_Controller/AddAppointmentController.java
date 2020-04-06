@@ -2,7 +2,7 @@ package View_Controller;
 
 import Model.Customer;
 import Model.CustomerList;
-import static Model.DBManager.addNewAppointmentCheck;
+import static Model.DBManager.addAppointment;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -258,13 +258,28 @@ public class AddAppointmentController implements Initializable {
         //Convert ZoneDateTime to string
         String stringEndZDT = endUtcZdt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         
+        if(startLocalzdt.isAfter(endLocalzdt)) {
+            //Create a dialog box to warn that end time is before start time
+            Alert alert = new Alert(Alert.AlertType.WARNING, "The start time cannot be after the end time.");
+            alert.setTitle("Check Start and End Time");
+            alert.showAndWait();
+        }
+        else if (startLocalzdt.isEqual(endLocalzdt)) {
+            //Create a dialog box to warn that the start and end time cannot be the same
+            Alert alert = new Alert(Alert.AlertType.WARNING, "The start time cannot be the same as the end time.");
+            alert.setTitle("Check Start and End Time");
+            alert.showAndWait();
+        }
+        else {
+            addAppointment(customerId, title, description, location, contact, type, url, stringStartZDT, stringEndZDT);
+            stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+            scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
+            stage.setScene(new Scene(scene));
+            stage.setTitle("Appointment System - Main Menu");
+            stage.show();
+        }
         
-        addNewAppointmentCheck(customerId, title, description, location, contact, type, url, stringStartZDT, stringEndZDT);
-        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
-        stage.setScene(new Scene(scene));
-        stage.setTitle("Appointment System - Main Menu");
-        stage.show();
+        
     }
     
     @FXML

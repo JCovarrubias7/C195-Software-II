@@ -632,18 +632,8 @@ public class DBManager {
             }
         }));
     }
-        
-    public static void addNewAppointmentCheck(int customerId, String title, String description, 
-            String location, String contact, String type, String url, String startTime, String endTime) {
-        
-        //TODO
-        //MAke sure time doesn't overlapt with another appointment
-        addAppointment(customerId, title, description, location, contact, type, url, startTime, endTime);
-        
-       
-    }
     
-    private static void addAppointment(int customerId, String title, String description, String location, 
+    public static void addAppointment(int customerId, String title, String description, String location, 
             String contact, String type, String url, String startTime, String endTime) {
         
         String query = "SELECT appointmentId from appointment ORDER BY appointmentId";
@@ -680,13 +670,7 @@ public class DBManager {
         }
     }
     
-    public static void modAppointmentCheck(int appointmentId, int customerId, String title, String description, 
-            String location, String contact, String type, String url, String startTime, String endTime) {
-        //TODO validationchecks
-        modifyAppointment(appointmentId, customerId, title, description, location, contact, type, url, startTime, endTime);
-    }
-    
-    private static void modifyAppointment(int appointmentId, int customerId, String title, String description, 
+    public static void modifyAppointment(int appointmentId, int customerId, String title, String description, 
             String location, String contact, String type, String url, String startTime, String endTime) {
         
         //Set query to update the appointment in the Database

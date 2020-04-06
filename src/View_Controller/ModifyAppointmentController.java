@@ -3,7 +3,7 @@ package View_Controller;
 import Model.Appointment;
 import Model.Customer;
 import Model.CustomerList;
-import static Model.DBManager.modAppointmentCheck;
+import static Model.DBManager.modifyAppointment;
 import java.io.IOException;
 import java.net.URL;
 import java.time.Instant;
@@ -317,12 +317,26 @@ public class ModifyAppointmentController implements Initializable {
         //Convert ZoneDateTime to string
         String stringEndZDT = endUtcZdt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
         
-        modAppointmentCheck(appointmentId, customerId, title, description, location, contact, type, url, stringStartZDT, stringEndZDT);
-        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-        scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
-        stage.setScene(new Scene(scene));
-        stage.setTitle("Appointment System - Main Menu");
-        stage.show();
+        if(startLocalzdt.isAfter(endLocalzdt)) {
+            //Create a dialog box to warn that end time is before start time
+            Alert alert = new Alert(Alert.AlertType.WARNING, "The start time cannot be after the end time.");
+            alert.setTitle("Check Start and End Time");
+            alert.showAndWait();
+        }
+        else if (startLocalzdt.isEqual(endLocalzdt)) {
+            //Create a dialog box to warn that the start and end time cannot be the same
+            Alert alert = new Alert(Alert.AlertType.WARNING, "The start time cannot be the same as the end time.");
+            alert.setTitle("Check Start and End Time");
+            alert.showAndWait();
+        }
+        else {
+            modifyAppointment(appointmentId, customerId, title, description, location, contact, type, url, stringStartZDT, stringEndZDT);
+            stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+            scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
+            stage.setScene(new Scene(scene));
+            stage.setTitle("Appointment System - Main Menu");
+            stage.show();
+        }
     }
 
     @FXML
