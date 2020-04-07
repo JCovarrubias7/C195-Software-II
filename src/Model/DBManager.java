@@ -412,8 +412,7 @@ public class DBManager {
     
     public static void setCustomerToActive(String name, int addressId) {
         String query = "UPDATE customer SET active = 1, lastUpdate = CURRENT_TIMESTAMP,"
-                + "lastUpdateBy = '"+currentUser+"' WHERE customerName = ? "
-                + "AND addressId = ?";
+                + "lastUpdateBy = '"+currentUser+"' WHERE customerName = ? AND addressId = ?";
         preparedStatement(query);
         
         try {
@@ -593,7 +592,8 @@ public class DBManager {
     }
     
     private static void modifyCustomer(int id, String name, int addressId) {
-        String query = "UPDATE customer SET customerName = ?,addressId = ? WHERE customerId = ?";
+        String query = "UPDATE customer SET customerName = ?, addressId = ?, lastUpdate = CURRENT_TIMESTAMP,"
+                + "lastUpdateBy = '" + currentUser + "' WHERE customerId = ?";
         preparedStatement(query);
         try {
            prepStmt.setString(1, name);
@@ -676,7 +676,8 @@ public class DBManager {
         //Set query to update the appointment in the Database
         String query = "UPDATE appointment SET customerId = '"+ customerId +"', title = ?, "
                 + "description = ?, location = ?, contact = ?, type = ?, url = ?, start = '"+ startTime +"', "
-                + "end = '"+ endTime +"' WHERE appointmentId = '"+ appointmentId +"'";
+                + "end = '"+ endTime +"', lastUpdate = CURRENT_TIMESTAMP, lastUpdateBy = '" + currentUser + "'"
+                + " WHERE appointmentId = '"+ appointmentId +"'";
         preparedStatement(query);
         try {
            prepStmt.setString(1, title);
