@@ -2,9 +2,11 @@ package View_Controller;
 
 import Model.Customer;
 import Model.CustomerList;
-import static Model.DBManager.addAppointment;
+import static Model.DBManager.addNewAppointmentCheck;
 import java.io.IOException;
 import java.net.URL;
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -270,8 +272,26 @@ public class AddAppointmentController implements Initializable {
             alert.setTitle("Check Start and End Time");
             alert.showAndWait();
         }
+        else if (startLocalzdt.getDayOfWeek() == SATURDAY || startLocalzdt.getDayOfWeek() == SUNDAY){
+            //Create a dialog box to warn about creating appointments during the weekend.
+            Alert alert = new Alert(Alert.AlertType.WARNING, "Appointments cannot be created on Saturday or Sunday");
+            alert.setTitle("Check Appointment Date");
+            alert.showAndWait();
+        }
+        else if (startLocalzdt.getHour() < 9 || startLocalzdt.getHour() > 16) {
+            //Create a dialog box to warn about appointment starting before/after working hours.
+            Alert alert = new Alert(Alert.AlertType.WARNING, "The appointment cannot be created before 9am or after 4:30pm.");
+            alert.setTitle("Check Start Time");
+            alert.showAndWait();
+        }
+        else if (endLocalzdt.getHour() > 16) {
+            //Create a dialog box to warn about appointment ending after working hours.
+            Alert alert = new Alert(Alert.AlertType.WARNING, "The appointment cannot end after 4:45pm. ");
+            alert.setTitle("Check Start and End Time");
+            alert.showAndWait();
+        }
         else {
-            addAppointment(customerId, title, description, location, contact, type, url, stringStartZDT, stringEndZDT);
+            addNewAppointmentCheck(customerId, title, description, location, contact, type, url, stringStartZDT, stringEndZDT, startLocalzdt, endLocalzdt);
             stage = (Stage)((Button)event.getSource()).getScene().getWindow();
             scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
             stage.setScene(new Scene(scene));
