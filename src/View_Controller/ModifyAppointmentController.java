@@ -332,7 +332,7 @@ public class ModifyAppointmentController implements Initializable {
             alert.showAndWait();
         }
         else if (startLocalzdt.getDayOfWeek() == SATURDAY || startLocalzdt.getDayOfWeek() == SUNDAY){
-            //Create a dialog box to warn about creating appointments during the weekend.
+            //Create a dialog box to warn about changing appointments to a date during the weekend.
             Alert alert = new Alert(Alert.AlertType.WARNING, "Appointments cannot be created on Saturday or Sunday");
             alert.setTitle("Check Appointment Date");
             alert.showAndWait();
