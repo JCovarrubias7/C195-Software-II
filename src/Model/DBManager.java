@@ -633,7 +633,53 @@ public class DBManager {
         }));
     }
     
-    public static void addAppointment(int customerId, String title, String description, String location, 
+    //Check to make sure user doesn't have overlapping appointments.
+    public static void addNewAppointmentCheck(int customerId, String title, String description, 
+         String location, String contact, String type, String url, String startTime, String endTime, 
+         ZonedDateTime startLocalzdt, ZonedDateTime endLocalzdt) {
+
+        //Set query to get appointsments
+        String query = "SELECT appointment.userId, appointment.start, appointment.end, user.userName \n" +
+                "FROM appointment INNER JOIN user\n" +
+                "ON appointment.userId = user.userId";
+        createStatement();
+        try {
+            ResultSet apptsResultSet = createStmt.executeQuery(query);
+            while (apptsResultSet.next()) {
+                String userName = apptsResultSet.getString("userName");
+                //Get start time and convert it to local timezone from UTC
+                LocalDateTime start = apptsResultSet.getTimestamp("start").toLocalDateTime();
+                Instant startInstant = start.toInstant(ZoneOffset.UTC);
+                //UTC IS a time zone, we just have to adjust to our time zone
+                //so this instant(the UTC) is zdt at this zone (systemDefault
+                ZonedDateTime zdtStartFromAppts = startInstant.atZone(ZoneId.systemDefault());
+
+                //Get end time and convert it to local timezone from UTC
+                LocalDateTime end = apptsResultSet.getTimestamp("end").toLocalDateTime();
+                Instant endInstant = end.toInstant(ZoneOffset.UTC);
+                //UTC IS a time zone, we just have to adjust to our time zone
+                //so this instant(the UTC) is zdt at this zone (systemDefault
+                ZonedDateTime zdtEndFromAppts = endInstant.atZone(ZoneId.systemDefault());
+
+                if (userName.equals(currentUser)) {
+                    if (startLocalzdt.isEqual(zdtStartFromAppts) || startLocalzdt.isAfter(zdtStartFromAppts)
+                            && startLocalzdt.isBefore(zdtEndFromAppts)) {
+                        //Create a dialog box to warn about the timing issues
+                        Alert alert = new Alert(Alert.AlertType.WARNING, "The appointment cannot be created while the user has another appointment during that time. ");
+                        alert.setTitle("Report Successfully Created");
+                        alert.showAndWait();
+                        return;
+                    }
+                }
+            }
+            addAppointment(customerId, title, description, location, contact, type, url, startTime, endTime);
+        } 
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    
+    private static void addAppointment(int customerId, String title, String description, String location, 
             String contact, String type, String url, String startTime, String endTime) {
         
         String query = "SELECT appointmentId from appointment ORDER BY appointmentId";
@@ -670,7 +716,52 @@ public class DBManager {
         }
     }
     
-    public static void modifyAppointment(int appointmentId, int customerId, String title, String description, 
+        //Check to make sure user doesn't have overlapping appointments and appointsments are within business hours.
+     public static void modAppointmentCheck(int appointmentId, int customerId, String title, String description, 
+            String location, String contact, String type, String url, String startTime, String endTime, 
+            ZonedDateTime startLocalzdt, ZonedDateTime endLocalzdt) {
+         
+        //Set query to get appointsments
+        String query = "SELECT appointment.userId, appointment.start, appointment.end, user.userName \n"
+                 + "FROM appointment INNER JOIN user\n"
+                 + "ON appointment.userId = user.userId";
+        createStatement();
+        try {
+            ResultSet apptsResultSet = createStmt.executeQuery(query);
+            while (apptsResultSet.next()) {
+                String userName = apptsResultSet.getString("userName");
+                //Get start time and convert it to local timezone from UTC
+                LocalDateTime start = apptsResultSet.getTimestamp("start").toLocalDateTime();
+                Instant startInstant = start.toInstant(ZoneOffset.UTC);
+                //UTC IS a time zone, we just have to adjust to our time zone
+                //so this instant(the UTC) is zdt at this zone (systemDefault
+                ZonedDateTime zdtStartFromAppts = startInstant.atZone(ZoneId.systemDefault());
+
+                //Get end time and convert it to local timezone from UTC
+                LocalDateTime end = apptsResultSet.getTimestamp("end").toLocalDateTime();
+                Instant endInstant = end.toInstant(ZoneOffset.UTC);
+                //UTC IS a time zone, we just have to adjust to our time zone
+                //so this instant(the UTC) is zdt at this zone (systemDefault
+                ZonedDateTime zdtEndFromAppts = endInstant.atZone(ZoneId.systemDefault());
+
+                if (userName.equals(currentUser)) {
+                    if (startLocalzdt.isEqual(zdtStartFromAppts) || startLocalzdt.isAfter(zdtStartFromAppts)
+                            && startLocalzdt.isBefore(zdtEndFromAppts)) {
+                        //Create a dialog box to warn about the timing issues
+                        Alert alert = new Alert(Alert.AlertType.WARNING, "The appointment cannot be changed while the user has another appointment during that time. ");
+                        alert.setTitle("Report Successfully Created");
+                        alert.showAndWait();
+                        return;
+                    }
+                }
+            }
+            modifyAppointment(appointmentId, customerId, title, description, location, contact, type, url, startTime, endTime);
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+     
+    private static void modifyAppointment(int appointmentId, int customerId, String title, String description, 
             String location, String contact, String type, String url, String startTime, String endTime) {
         
         //Set query to update the appointment in the Database
