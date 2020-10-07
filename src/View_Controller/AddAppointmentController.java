@@ -46,6 +46,7 @@ public class AddAppointmentController implements Initializable {
     //Define Fields
     Stage stage;
     Parent scene;
+    ObservableList<String> meetingType = FXCollections.observableArrayList();
     ObservableList<String> hours = FXCollections.observableArrayList();
     ObservableList<String> minutes = FXCollections.observableArrayList();
     ObservableList<Customer> associatedList = FXCollections.observableArrayList();
@@ -53,7 +54,7 @@ public class AddAppointmentController implements Initializable {
     int customerId = 0;
 
     @FXML
-    private TextField addApptTypeField;
+    private ComboBox<String> addApptTypeField;
     @FXML
     private TextField addApptTitleField;
     @FXML
@@ -113,7 +114,11 @@ public class AddAppointmentController implements Initializable {
         hours.addAll("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
         minutes.addAll("00", "15", "30", "45");
         
+        // Set the type of meetings for the combo box
+        meetingType.addAll("Phone Call", "In-Person", "Virtual", "At Golf Course");
+        
         //Set the lists to the ComboBox
+        addApptTypeField.setItems(meetingType);
         addApptStartHourCB.setItems(hours);
         addApptStartMinuteCB.setItems(minutes);
         addApptEndHourCB.setItems(hours);
@@ -224,7 +229,7 @@ public class AddAppointmentController implements Initializable {
             alert.showAndWait();
         }
         
-        String type = addApptTypeField.getText();
+        String type = addApptTypeField.getValue();
         String title = addApptTitleField.getText();
         String description = addApptDescriptionField.getText();
         String location = addApptLocationField.getText();
