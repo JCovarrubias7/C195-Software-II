@@ -94,11 +94,7 @@
                               <Insets right="5.0" />
                            </GridPane.margin>
                         </Label>
-                        <TextField fx:id="addApptTypeField" GridPane.columnIndex="1">
-                           <GridPane.margin>
-                              <Insets right="5.0" />
-                           </GridPane.margin>
-                        </TextField>
+                        <ComboBox fx:id="addApptTypeField" prefWidth="369.0" GridPane.columnIndex="1" />
                         <TextField fx:id="addApptTitleField" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <GridPane.margin>
                               <Insets right="5.0" />
