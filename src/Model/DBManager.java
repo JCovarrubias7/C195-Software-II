@@ -983,7 +983,7 @@ public class DBManager {
     public static void runReport1() throws IOException {
         String query = "SELECT type, start FROM appointment ORDER BY start ";
         //Create the file in the report directory found in the project directory
-        Path path = Paths.get("Reports/ApptTypesByMonth.txt");
+        Path path = Paths.get("Reports/Report 1 - ApptTypesByMonth.txt");
         if(Files.deleteIfExists(path)) {
         }
         Files.createDirectories(path.getParent());
@@ -1034,7 +1034,11 @@ public class DBManager {
             
             //Create string to write to file using stringbuilder
             StringBuilder sb = new StringBuilder();
+            sb.append("Report 1 - Appointment Types By Month");
+            sb.append(System.lineSeparator());
+            sb.append("Date: ");
             sb.append(stringTimestamp);
+            sb.append(System.lineSeparator());
             sb.append(System.lineSeparator());
             valueMap.forEach((k, v) -> {    //Lambda to iterate though each key value pair 
                 String keyValue = k + " - " + v;
@@ -1057,10 +1061,22 @@ public class DBManager {
                 "ON user.userId = appointment.userId\n" +
                 "WHERE NOW() < start";
         //Create the file in the report directory found in the project directory
-        Path path = Paths.get("Reports/UserSchedule.txt");
+        Path path = Paths.get("Reports/Report 2 - UserSchedule.txt");
         if(Files.deleteIfExists(path)) {
         }
         Files.createDirectories(path.getParent());
+        
+        //Get timestamp
+        String stringTimestamp = new Timestamp(System.currentTimeMillis()).toString();
+
+        //Create a string to write to the file using stringbuilder
+        StringBuilder sb = new StringBuilder();
+        sb.append("Report 2 - User Schedule ");
+        sb.append(System.lineSeparator());
+        sb.append("Date: ");
+        sb.append(stringTimestamp);
+        sb.append(System.lineSeparator());
+        sb.append(System.lineSeparator());
         
         createStatement();
         try {
@@ -1069,7 +1085,7 @@ public class DBManager {
                 //Set variables with the data from the DB
                 String user = apptByUserSet.getString("userName");
                 String contact = apptByUserSet.getString("contact");
-                String tytpe = apptByUserSet.getString("type");
+                String type = apptByUserSet.getString("type");
                 LocalDateTime start = apptByUserSet.getTimestamp("start").toLocalDateTime();
                 
                 //Set the format of the Date and Time Month day, year Time
@@ -1082,17 +1098,18 @@ public class DBManager {
                 //Create a string with the format set in the formatter
                 String stringStart = zdtStart.format(formatter);
                 
-                //Create a string to write to the file using stringbuilder
-                StringBuilder sb = new StringBuilder();
+                //Append user to the report
                 sb.append(user);
-                sb.append(" has an appointment with ");
+                sb.append(" has a \"");
+                sb.append(type);
+                sb.append("\" appointment with ");
                 sb.append(contact);
                 sb.append(" on ");
                 sb.append(stringStart);
                 sb.append(System.lineSeparator());
                 
                 //Write to actual file, create if doesn't exist, append if exist
-                Files.write(path, sb.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+                Files.write(path, sb.toString().getBytes(), StandardOpenOption.CREATE);
             }
             apptByUserSet.close();
             createStmt.close();
@@ -1110,10 +1127,22 @@ public class DBManager {
                 "GROUP BY appointment.customerId, customer.customerId  \n" +
                 "HAVING COUNT(*) > 0";
         //Create the file in the report directory found in the project directory
-        Path path = Paths.get("Reports/CustomerTotalAppointments.txt");
+        Path path = Paths.get("Reports/Report 3 - CustomerTotalAppointments.txt");
         if(Files.deleteIfExists(path)) {
         }
         Files.createDirectories(path.getParent());
+        
+        //Get timestamp
+        String stringTimestamp = new Timestamp(System.currentTimeMillis()).toString();
+
+        //Create a string to write to the file using stringbuilder
+        StringBuilder sb = new StringBuilder();
+        sb.append("Report 3 - Total Appointments by Customer ");
+        sb.append(System.lineSeparator());
+        sb.append("Date: ");
+        sb.append(stringTimestamp);
+        sb.append(System.lineSeparator());
+        sb.append(System.lineSeparator());
         
         createStatement();
         try {
@@ -1124,8 +1153,7 @@ public class DBManager {
                 String customerName = totalApptsSet.getString("customerName");
                 int totalAppts = totalApptsSet.getInt("appointments");
                 
-                //Create a string to write to the file using stringbuilder
-                StringBuilder sb = new StringBuilder();
+                //Append customer to report
                 sb.append(customerName);
                 sb.append(" with customer ID=");
                 sb.append(customerId);
@@ -1135,7 +1163,7 @@ public class DBManager {
                 sb.append(System.lineSeparator());
                 
                 //Write to actual file, create if doesn't exist, append if exist
-                Files.write(path, sb.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+                Files.write(path, sb.toString().getBytes(), StandardOpenOption.CREATE);
             }
             totalApptsSet.close();
             createStmt.close();
