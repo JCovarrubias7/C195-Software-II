@@ -184,23 +184,28 @@
                <children>
                   <HBox alignment="BOTTOM_CENTER" prefHeight="47.0" prefWidth="803.0">
                      <children>
-                        <Label text="Customers">
+                        <Label prefHeight="17.0" prefWidth="87.0" text="Customers">
                            <HBox.margin>
-                              <Insets left="10.0" />
+                              <Insets left="20.0" />
                            </HBox.margin>
                         </Label>
-                        <Pane prefHeight="47.0" prefWidth="266.0" />
-                        <Button mnemonicParsing="false" onAction="#addApptSearchOnActionButton" prefWidth="100.0" text="Search" textAlignment="CENTER">
+                        <Pane prefHeight="47.0" prefWidth="269.0" />
+                        <TextField fx:id="addApptSearchField" prefHeight="25.0" prefWidth="213.0">
                            <HBox.margin>
-                              <Insets right="40.0" top="5.0" />
+                              <Insets right="20.0" top="5.0" />
                            </HBox.margin>
-                        </Button>
-                        <TextField fx:id="addApptSearchField">
+                        </TextField>
+                        <Button mnemonicParsing="false" onAction="#addApptSearchOnActionButton" prefWidth="100.0" text="Search" textAlignment="CENTER">
                            <HBox.margin>
                               <Insets top="5.0" />
                            </HBox.margin>
-                        </TextField>
-                        <Pane prefHeight="47.0" prefWidth="343.0" />
+                        </Button>
+                        <Pane prefHeight="47.0" prefWidth="263.0" />
+                        <Button minWidth="150.0" mnemonicParsing="false" onAction="#addApptResetSearchButton" text="Reset Search">
+                           <HBox.margin>
+                              <Insets right="10.0" top="5.0" />
+                           </HBox.margin>
+                        </Button>
                      </children>
                   </HBox>
                   <TableView fx:id="addApptCustomerTableView" prefHeight="563.0" prefWidth="78.0">
@@ -219,7 +224,7 @@
                         <Insets right="10.0" />
                      </VBox.margin>
                   </Button>
-                  <HBox prefHeight="25.0" prefWidth="1083.0">
+                  <HBox alignment="BOTTOM_LEFT" prefHeight="25.0" prefWidth="1083.0">
                      <children>
                         <Label text="Associated Customer">
                            <HBox.margin>
