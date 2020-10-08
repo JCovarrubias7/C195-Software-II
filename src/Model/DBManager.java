@@ -722,7 +722,7 @@ public class DBManager {
             ZonedDateTime startLocalzdt, ZonedDateTime endLocalzdt) {
          
         //Set query to get appointsments
-        String query = "SELECT appointment.userId, appointment.start, appointment.end, user.userName \n"
+        String query = "SELECT appointment.userId, appointment.start, appointment.end, appointment.appointmentId, user.userName \n"
                  + "FROM appointment INNER JOIN user\n"
                  + "ON appointment.userId = user.userId";
         createStatement();
@@ -730,6 +730,7 @@ public class DBManager {
             ResultSet apptsResultSet = createStmt.executeQuery(query);
             while (apptsResultSet.next()) {
                 String userName = apptsResultSet.getString("userName");
+                int apptId = apptsResultSet.getInt("appointmentId");
                 //Get start time and convert it to local timezone from UTC
                 LocalDateTime start = apptsResultSet.getTimestamp("start").toLocalDateTime();
                 Instant startInstant = start.toInstant(ZoneOffset.UTC);
@@ -744,7 +745,7 @@ public class DBManager {
                 //so this instant(the UTC) is zdt at this zone (systemDefault
                 ZonedDateTime zdtEndFromAppts = endInstant.atZone(ZoneId.systemDefault());
 
-                if (userName.equals(currentUser)) {
+                if (userName.equals(currentUser) && apptId != appointmentId) {
                     if (startLocalzdt.isEqual(zdtStartFromAppts) || startLocalzdt.isAfter(zdtStartFromAppts)
                             && startLocalzdt.isBefore(zdtEndFromAppts)) {
                         //Create a dialog box to warn about the timing issues
