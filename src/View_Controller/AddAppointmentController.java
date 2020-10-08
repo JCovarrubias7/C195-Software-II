@@ -166,6 +166,12 @@ public class AddAppointmentController implements Initializable {
             }
         }
     }
+    
+    @FXML
+    private void addApptResetSearchButton(ActionEvent event) {
+        //Reset the tableView to display all the customer already created via the list
+        addApptCustomerTableView.setItems(CustomerList.getAllCustomers());
+    }
 
     @FXML
     private void addApptAddCustomerButton(ActionEvent event) {
