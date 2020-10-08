@@ -49,6 +49,7 @@ public class ModifyAppointmentController implements Initializable {
     //Define Fields
     Stage stage;
     Parent scene;
+    ObservableList<String> meetingType = FXCollections.observableArrayList();
     ObservableList<String> hours = FXCollections.observableArrayList();
     ObservableList<String> minutes = FXCollections.observableArrayList();
     ObservableList<Customer> associatedList = FXCollections.observableArrayList();
@@ -57,7 +58,7 @@ public class ModifyAppointmentController implements Initializable {
     int appointmentId;
 
     @FXML
-    private TextField modApptTypeField;
+    private ComboBox<String> modApptTypeField;
     @FXML
     private TextField modApptTitleField;
     @FXML
@@ -108,7 +109,7 @@ public class ModifyAppointmentController implements Initializable {
     private Button modApptDeleteButton;
     
     public void sendAppt(Appointment appointment) {
-        modApptTypeField.setText(appointment.getType());
+        modApptTypeField.setValue(String.valueOf(appointment.getType()));
         modApptTitleField.setText(appointment.getTitle());
         modApptDescriptionField.setText(appointment.getDescriptions());
         modApptLocationField.setText(appointment.getLocation());
@@ -172,7 +173,11 @@ public class ModifyAppointmentController implements Initializable {
         hours.addAll("01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12");
         minutes.addAll("00", "15", "30", "45");
         
+        // Set the type of meetings for the combo box
+        meetingType.addAll("Phone Call", "In-Person", "Virtual", "At Golf Course");
+        
         //Set the lists to the ComboBox
+        modApptTypeField.setItems(meetingType);
         modApptStartHourCB.setItems(hours);
         modApptStartMinuteCB.setItems(minutes);
         modApptEndHourCB.setItems(hours);
@@ -219,6 +224,12 @@ public class ModifyAppointmentController implements Initializable {
                 alert.showAndWait();
             }
         }
+    }
+    
+    @FXML
+    private void addApptResetSearchButton(ActionEvent event) {
+        //Reset the tableView to display all the customer already created via the list
+        modApptCustomerTableView.setItems(CustomerList.getAllCustomers());
     }
 
     @FXML
@@ -283,7 +294,7 @@ public class ModifyAppointmentController implements Initializable {
             alert.showAndWait();
         }
         
-        String type = modApptTypeField.getText();
+        String type = modApptTypeField.getValue();
         String title = modApptTitleField.getText();
         String description = modApptDescriptionField.getText();
         String location = modApptLocationField.getText();
