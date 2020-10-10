@@ -1041,13 +1041,15 @@ public class DBManager {
             sb.append(stringTimestamp);
             sb.append(System.lineSeparator());
             sb.append(System.lineSeparator());
+            sb.append(String.format("%20s %63s", "Year & Month", "Appointment Type"));
+            sb.append(System.lineSeparator());
             valueMap.forEach((k, v) -> {    //Lambda to iterate though each key value pair 
-                String keyValue = k + " - " + v;
-                sb.append(keyValue);
+                sb.append(String.format("%20s", k));
+                sb.append(String.format("%64s", v));
                 sb.append(System.lineSeparator());
             });
             sb.append(System.lineSeparator());
-            
+       
             //Write to actual file, create if doesn't exist, append if exist
             Files.write(path, sb.toString().getBytes(), StandardOpenOption.CREATE, StandardOpenOption.APPEND);
         }
@@ -1078,6 +1080,8 @@ public class DBManager {
         sb.append(stringTimestamp);
         sb.append(System.lineSeparator());
         sb.append(System.lineSeparator());
+        sb.append(String.format("%20s %20s %30s %31s", "User", "Appointment Type", "Contact", "Date & Time"));
+        sb.append(System.lineSeparator());
         
         createStatement();
         try {
@@ -1100,13 +1104,10 @@ public class DBManager {
                 String stringStart = zdtStart.format(formatter);
                 
                 //Append user to the report
-                sb.append(user);
-                sb.append(" has a \"");
-                sb.append(type);
-                sb.append("\" appointment with ");
-                sb.append(contact);
-                sb.append(" on ");
-                sb.append(stringStart);
+                sb.append(String.format("%20s", user));
+                sb.append(String.format("%21s", type));
+                sb.append(String.format("%31s", contact));
+                sb.append(String.format("%32s", stringStart));
                 sb.append(System.lineSeparator());
                 
                 //Write to actual file, create if doesn't exist, append if exist
@@ -1144,6 +1145,8 @@ public class DBManager {
         sb.append(stringTimestamp);
         sb.append(System.lineSeparator());
         sb.append(System.lineSeparator());
+        sb.append(String.format("%12s %30s %20s", "Customer ID", "Customer", "Total Appointments"));
+        sb.append(System.lineSeparator());
         
         createStatement();
         try {
@@ -1155,12 +1158,9 @@ public class DBManager {
                 int totalAppts = totalApptsSet.getInt("appointments");
                 
                 //Append customer to report
-                sb.append(customerName);
-                sb.append(" with customer ID=");
-                sb.append(customerId);
-                sb.append(" has had a total of ");
-                sb.append(totalAppts);
-                sb.append(" appointments.");
+                sb.append(String.format("%12s", customerId));
+                sb.append(String.format("%31s", customerName));
+                sb.append(String.format("%21s", totalAppts));
                 sb.append(System.lineSeparator());
                 
                 //Write to actual file, create if doesn't exist, append if exist
