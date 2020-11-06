@@ -176,6 +176,11 @@ public class DBManager {
         }
     }
     
+    //Create a method to create a new user
+    public static void addNewUser(String name, String password, String verifyPassword) {
+        
+    }
+    
     //Create a method to check whether the customer already exist in the DB
     //and check if it is active or not. If not active, it will activate.
     public static void addNewCustomerChecks(String name, String address, String address2,
