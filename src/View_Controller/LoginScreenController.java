@@ -104,16 +104,25 @@ public class LoginScreenController implements Initializable {
             if(checkCredentials(userName, userPassword) == true) {
                 //Write to log a successful log in
                 LOG.log(Level.INFO, "{0} succesfully logged in.", userName);
-                
-                //Get Main Menu scene
-                stage = (Stage)((Button)event.getSource()).getScene().getWindow();
-                scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
-                stage.setScene(new Scene(scene));
-                stage.setTitle("Appointment System - Main Menu");
-                stage.show();
-                
-                //Check to see if there is an appointment in the next 15 minutes
-                appointmentWithin15Minutes();
+                    if(userName.equals("ABGAdmin")) {
+                        //Get Admin Menu scene if user is Admin
+                        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+                        scene = FXMLLoader.load(getClass().getResource("/View_Controller/AdminMenu.fxml"));
+                        stage.setScene(new Scene(scene));
+                        stage.setTitle("Appointment System - Main Menu");
+                        stage.show();
+                    }
+                    else {
+                        //Get Main Menu scene if user is salesrep
+                        stage = (Stage)((Button)event.getSource()).getScene().getWindow();
+                        scene = FXMLLoader.load(getClass().getResource("/View_Controller/MainMenu.fxml"));
+                        stage.setScene(new Scene(scene));
+                        stage.setTitle("Appointment System - Main Menu");
+                        stage.show();
+
+                        //Check to see if there is an appointment in the next 15 minutes
+                        appointmentWithin15Minutes();
+                    }
             }
             else {
                 Alert alert = new Alert(Alert.AlertType.WARNING, incorrectCredentialsLabel);
