@@ -178,7 +178,55 @@ public class DBManager {
     
     //Create a method to create a new user
     public static void addNewUser(String name, String password, String verifyPassword) {
-        
+        try {
+            // Check to see if the username already. If true, then error message will be generated
+            if(checkIfUserExist(name)) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("ERROR WITH USERNAME");
+                alert.setContentText("This Username is already used.");
+                alert.showAndWait();
+                return;
+            }
+            else {
+                //If username is not being used, then create the new user
+                String query = "INSERT INTO user (userName, password, active, createDate, createdBy, lastUpdate, lastupdateBy) "
+                        + "VALUES (?, ?, 1, CURRENT_DATE, 'Admin', CURRENT_TIMESTAMP, 'Admin')";
+                preparedStatement(query);
+                prepStmt.setString(1, name);
+                prepStmt.setString(2, password);
+                prepStmt.executeUpdate();
+                prepStmt.close();
+                conn.close();
+                
+                //Display confirmation after creating user
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("User Created Successfully");
+                alert.setContentText("An account for " + name + " was created successfully");
+                alert.showAndWait();
+                return;
+            }
+        } 
+        catch (SQLException e) {
+                System.out.println(e.getMessage());
+        }
+    }
+    
+    private static boolean checkIfUserExist(String name) throws SQLException {
+            String query = "SELECT userName FROM user WHERE userName = ? ";
+            preparedStatement(query);
+            
+            prepStmt.setString(1, name);
+            ResultSet checkUserSet = prepStmt.executeQuery();
+            // If there is a result set, that means there is a username with that name 
+            // This will return true
+            if (checkUserSet.next()){
+                checkUserSet.close();
+                return true;
+            }
+            else {
+                checkUserSet.close();
+                return false;
+            }
     }
     
     //Create a method to check whether the customer already exist in the DB
