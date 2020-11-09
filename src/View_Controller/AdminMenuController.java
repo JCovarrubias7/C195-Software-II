@@ -73,8 +73,13 @@ public class AdminMenuController implements Initializable {
             return;
         }
         
+        // Call method to add user
         addNewUser(name, password, verifyPassword);
         
+        // Clear fields for a new user
+        adminUsernameField.setText("");
+        adminUserPasswordField.setText("");
+        adminUserVerifyPasswordField.setText("");
     }
 
     @FXML
